@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_with pgsql 	# enable postgresql support (by default use mysql)
-
+#
 %define	_beta	beta10
 Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
@@ -19,9 +19,16 @@ URL:		http://zabbix.sourceforge.net/
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.7c
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	_sysconfdir	/etc/%{name}
+%define		_sysconfdir	/etc/%{name}
+%define		htmldir		/home/services/html/zabbix
 
 %description
 zabbix is software that monitors numerous parameters of a network and
@@ -63,7 +70,7 @@ Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 Summary:	inetd agent for zabbix
 Summary(pl):	Wersja inetd agenta zabbiksa
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:	%{name} = %{version}
 Requires:	inetdaemon
 Obsoletes:	%{name}-agent-standalone
 
@@ -77,7 +84,7 @@ Ten pakiet dostarcza agenta zabbiksa dla inetd.
 Summary:	Standalone agent for zabbix
 Summary(pl):	Wersja wolnostoj±ca agenta zabbiksa
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:	%{name} = %{version}
 Obsoletes:	%{name}-agent-inetd
 
 %description agent-standalone
@@ -88,34 +95,45 @@ Ten pakiet dostarcza wolnostoj±cej wersji agenta zabbiksa.
 
 %package suckerd
 Summary:	sucker daemon for zabbix
+Summary(pl):	Demon sucker dla zabbiksa
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:	%{name} = %{version}
 %{!?with_pgsql:Requires:	mysql}
 %{?with_pgsql:Requires:	postgresql}
 
 %description suckerd
 This package provides the sucker daemon for zabbix.
 
+%description suckerd -l pl
+Ten pakiet zawiera demona sucker dla zabbiksa.
+
 %package trapper-inetd
 Summary:	inetd trapper for zabbix
 Summary(pl):	Wersja inetd programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:	%{name} = %{version}
 Requires:	inetdaemon
 Obsoletes:	%{name}-trapper-standalone
 
 %description trapper-inetd
 This package provides inetd version of zabbix trapper.
 
+%description trapper-inetd -l pl
+Ten pakiet zawiera program pu³apkuj±cy zabbiksa dla inetd.
+
 %package trapper-standalone
 Summary:	Standalone trapper for zabbix
 Summary(pl):	Wersja wolnostoj±ca programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:	%{name} = %{version}
 Obsoletes:	%{name}-trapper-inetd
 
 %description trapper-standalone
 This package provides standalone version of zabbix trapper.
+
+%description trapper-standalone -l pl
+Ten pakiet zawiera wolnostoj±c± wersjê programu pu³apkuj±cego
+zabbiksa.
 
 %package sender
 Summary:	zabbix's sender
@@ -124,6 +142,9 @@ Group:		Networking/Admin
 
 %description sender
 This package provides the zabbix sender.
+
+%description sender -l pl
+Ten pakiet zawiera program zawiadamiaj±cy zabbiksa.
 
 %prep
 %setup -q -n %{name}-%{version}%{_beta}
@@ -138,11 +159,11 @@ This package provides the zabbix sender.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/sysconfig/rc-inetd,%{_sbindir},/home/services/html/zabbix}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/sysconfig/rc-inetd,%{_sbindir},%{htmldir}}
 
 install bin/zabbix_* $RPM_BUILD_ROOT%{_sbindir}
 install misc/conf/* $RPM_BUILD_ROOT%{_sysconfdir}
-cp -r frontends/php/* $RPM_BUILD_ROOT/home/services/html/zabbix
+cp -r frontends/php/* $RPM_BUILD_ROOT%{htmldir}
 
 install %SOURCE1 $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
 install %SOURCE2 $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
@@ -195,7 +216,7 @@ fi
 
 %files frontend-php
 %defattr(644,root,root,755)
-/home/services/html/zabbix
+%{htmldir}
 
 %files agent-inetd
 %defattr(644,root,root,755)
