@@ -19,12 +19,15 @@ URL:		http://zabbix.sourceforge.net/
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.7d
-Requires(pre):	/usr/bin/getgid
+BuildRequires:	rpmbuild(macros) >= 1.159
 Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
+Provides:	group(zabbix)
+Provides:	user(zabbix)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -174,17 +177,27 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -z "`/usr/bin/getgid zabbix`" ]; then
-	/usr/sbin/groupadd zabbix
+if [ -n "`/usr/bin/getgid zabbix`" ]; then
+	if [ "`/usr/bin/getgid zabbix`" != "111" ]; then
+		echo "Error: group zabbix doesn't have gid=111. Correct this before installing zabbix." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/groupadd -g 111 zabbix
 fi
-if [ -z "`/bin/id -u zabbix 2>/dev/null`" ]; then
-	/usr/sbin/useradd -d / -g zabbix -c "Zabbix User" -s /bin/false zabbix
+if [ -n "`/bin/id -u zabbix 2>/dev/null`" ]; then
+	if [ "`/bin/id -u zabbix`" != "111" ]; then
+		echo "Error: user zabbix doesn't have uid=111. Correct this before installing zabbix." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/useradd -d / -u 111 -g zabbix -c "Zabbix User" -s /bin/false zabbix
 fi
 
 %postun
 if [ "$1" = "0" ]; then
-	/usr/sbin/userdel zabbix
-	/usr/sbin/groupdel zabbix
+	%userremove zabbix
+	%groupremove zabbix
 fi
 
 %post agent-inetd
