@@ -167,8 +167,8 @@ install bin/zabbix_* $RPM_BUILD_ROOT%{_sbindir}
 install misc/conf/* $RPM_BUILD_ROOT%{_sysconfdir}
 cp -r frontends/php/* $RPM_BUILD_ROOT%{htmldir}
 
-install %SOURCE1 $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
-install %SOURCE2 $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
 
 %clean
 rm -rf $RPM_BUILD_ROOT
