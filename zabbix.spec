@@ -19,14 +19,6 @@ URL:		http://zabbix.sourceforge.net/
 %{?_with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	ucd-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.6j
-#PreReq:	-
-#Requires	-
-#Requires(pre,post):	-
-#Requires(preun):	-
-#Requires(postun):	-
-#Provides:	-
-#Obsoletes:	-
-#Conflicts:	-
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_sysconfdir	/etc/%{name}
@@ -62,7 +54,10 @@ Requires:	apache
 Requires:	php
 
 %description frontend-php
-blah
+This package provides web based (PHP) frontend for zabbix.
+
+%description -l pl frontend-php
+Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 
 %package agent-inetd
 Summary:	inetd agent for zabbix
@@ -73,7 +68,10 @@ Requires:	inetdaemon
 Obsoletes:	%{name}-agent-standalone
 
 %description agent-inetd
-blah
+This package provides inetd version of zabbix agent.
+
+%description -l pl agent-inetd
+Ten pakiet dostarcza agenta zabbiksa dla inetd.
 
 %package agent-standalone
 Summary:	Standalone agent for zabbix
@@ -82,8 +80,11 @@ Group:		Networking/Admin
 Requires:	%{name}
 Obsoletes:	%{name}-agent-inetd
 
-%description agent-standalone
-blah
+%description  agent-standalone
+This package provides standalone version of zabbix agent.
+
+%description  agent-standalone
+Ten pakiet dostarcza wolnostoj±cej wersji agenta zabbiksa.
 
 %package suckerd
 Summary:	sucker daemon for zabbix
@@ -102,9 +103,6 @@ Group:		Networking/Admin
 Requires:	%{name}
 Requires:	inetdaemon
 Obsoletes:	%{name}-trapper-standalone
-
-%description trapper-inetd
-blah
 
 %package trapper-standalone
 Summary:	Standalone trapper for zabbix
