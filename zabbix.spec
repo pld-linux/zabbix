@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_with pgsql 	# enable postgresql support (by default use mysql)
 #
-%define	_beta	beta10
+%define	_beta	beta14
 Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
@@ -11,7 +11,7 @@ Release:	0.%{_beta}.0.1
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}%{_beta}.tar.gz
-# Source0-md5:	6d1fd1c4e8166ceffa730060583d4014
+# Source0-md5:	0ac320c6cd99f801d8cb7923ca790419
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
