@@ -56,7 +56,7 @@ Requires:	php
 %description frontend-php
 This package provides web based (PHP) frontend for zabbix.
 
-%description -l pl frontend-php
+%description frontend-php -l pl
 Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 
 %package agent-inetd
@@ -70,7 +70,7 @@ Obsoletes:	%{name}-agent-standalone
 %description agent-inetd
 This package provides inetd version of zabbix agent.
 
-%description -l pl agent-inetd
+%description agent-inetd -l pl
 Ten pakiet dostarcza agenta zabbiksa dla inetd.
 
 %package agent-standalone
@@ -80,10 +80,10 @@ Group:		Networking/Admin
 Requires:	%{name}
 Obsoletes:	%{name}-agent-inetd
 
-%description  agent-standalone
+%description agent-standalone
 This package provides standalone version of zabbix agent.
 
-%description  agent-standalone
+%description agent-standalone -l pl
 Ten pakiet dostarcza wolnostoj±cej wersji agenta zabbiksa.
 
 %package suckerd
