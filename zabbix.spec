@@ -11,6 +11,7 @@ Release:	0.%{_beta}.0.1
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}%{_beta}.tar.gz
+# Source0-md5:	ed691c777df63aa6081dde750f10e733
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
