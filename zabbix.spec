@@ -28,7 +28,7 @@ Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
-%define		htmldir		/home/html/zabbix
+%define		htmldir		/home/httpd/html/zabbix
 
 %description
 zabbix is software that monitors numerous parameters of a network and
