@@ -190,7 +190,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/manual.pdf AUTHORS ChangeLog FAQ TODO create bin/ZabbixW32.exe
+%doc doc/Zabbix\ Manual.pdf AUTHORS ChangeLog FAQ TODO create bin/ZabbixW32.exe
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 
 %files frontend-php
