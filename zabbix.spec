@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with pgsql 	# enable postgresql support (by default use mysql)
+%bcond_with pgsql 	# enable PostgreSQL support (by default use mysql)
 #
 %define	_beta	beta14
 Summary:	zabbix - network monitoring software
