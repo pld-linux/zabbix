@@ -1,8 +1,8 @@
 #
 # Conditional build:
-# _with_pgsql - enable postgresql support (by default use mysql)
-#
-%define	_beta	beta8
+%bcond_with pgsql 	# enable postgresql support (by default use mysql)
+
+%define	_beta	beta10
 Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
@@ -11,14 +11,14 @@ Release:	0.%{_beta}.0.1
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}%{_beta}.tar.gz
-# Source0-md5:	ed691c777df63aa6081dde750f10e733
+# Source0-md5:	6d1fd1c4e8166ceffa730060583d4014
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
-%{!?_with_pgsql:BuildRequires:	mysql-devel}
-%{?_with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	ucd-snmp-devel
-BuildRequires:	openssl-devel >= 0.9.6j
+%{!?with_pgsql:BuildRequires:	mysql-devel}
+%{?with_pgsql:BuildRequires:	postgresql-devel}
+BuildRequires:	net-snmp-devel
+BuildRequires:	openssl-devel >= 0.9.7c
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_sysconfdir	/etc/%{name}
@@ -90,11 +90,11 @@ Ten pakiet dostarcza wolnostoj±cej wersji agenta zabbiksa.
 Summary:	sucker daemon for zabbix
 Group:		Networking/Admin
 Requires:	%{name}
-%{!?_with_pgsql:Requires:	mysql}
-%{?_with_pgsql:Requires:	postgresql}
+%{!?with_pgsql:Requires:	mysql}
+%{?with_pgsql:Requires:	postgresql}
 
 %description suckerd
-blah
+This package provides the sucker daemon for zabbix.
 
 %package trapper-inetd
 Summary:	inetd trapper for zabbix
@@ -104,6 +104,9 @@ Requires:	%{name}
 Requires:	inetdaemon
 Obsoletes:	%{name}-trapper-standalone
 
+%description trapper-inetd
+This package provides inetd version of zabbix trapper.
+
 %package trapper-standalone
 Summary:	Standalone trapper for zabbix
 Summary(pl):	Wersja wolnostoj±ca programu pu³apkuj±cego zabbiksa
@@ -112,7 +115,7 @@ Requires:	%{name}
 Obsoletes:	%{name}-trapper-inetd
 
 %description trapper-standalone
-blah
+This package provides standalone version of zabbix trapper.
 
 %package sender
 Summary:	zabbix's sender
@@ -120,7 +123,7 @@ Summary(pl):	Program zawiadamiaj±cy zabbiksa
 Group:		Networking/Admin
 
 %description sender
-blah
+This package provides the zabbix sender.
 
 %prep
 %setup -q -n %{name}-%{version}%{_beta}
@@ -130,8 +133,9 @@ rm -f missing
 %{__aclocal}
 %{__autoconf}
 %configure \
-	%{!?_with_pgsql:--with-mysql} \
-	%{?_with_pgsql:--with-pgsql}
+	%{!?with_pgsql:--with-mysql} \
+	%{?with_pgsql:--with-pgsql} \
+	--with-net-snmp
 
 %{__make}
 
