@@ -17,8 +17,8 @@ Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
 %{!?with_pgsql:BuildRequires:	mysql-devel}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	net-snmp-devel
-BuildRequires:	openssl-devel >= 0.9.7c
+BuildRequires:	ucd-snmp-devel
+BuildRequires:	openssl-devel >= 0.9.6k
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
 Requires(pre):	/usr/sbin/groupadd
@@ -28,7 +28,7 @@ Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
-%define		htmldir		/home/services/html/zabbix
+%define		htmldir		/home/html/zabbix
 
 %description
 zabbix is software that monitors numerous parameters of a network and
@@ -153,7 +153,7 @@ Ten pakiet zawiera program zawiadamiaj±cy zabbiksa.
 %configure \
 	%{!?with_pgsql:--with-mysql} \
 	%{?with_pgsql:--with-pgsql} \
-	--with-net-snmp
+	--with-ucd-snmp
 
 %{__make}
 
