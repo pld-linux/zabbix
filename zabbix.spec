@@ -58,7 +58,8 @@ Summary:	PHP frontend for zabbix
 Summary(pl):	Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
 Requires:	apache
-Requires:	php
+%{!?with_pgsql:Requires:	php-mysql}
+%{?with_pgsql:Requires:	php-pgsql}
 
 %description frontend-php
 This package provides web based (PHP) frontend for zabbix.
