@@ -3,8 +3,8 @@
 # _with_pgsql - enable postgresql support (by default use mysql)
 #
 %define	_beta	beta8
-Summary:	zabbix
-Summary(pl):	zabbix
+Summary:	zabbix - network monitoring software
+Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.0
 Release:	0.%{_beta}.0.1
@@ -15,8 +15,8 @@ Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}%{_beta}.tar.gz
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
-%{!?_with_pgsql:BuildRequires:   mysql-devel}
-%{?_with_pgsql:BuildRequires:   postgresql-devel}
+%{!?_with_pgsql:BuildRequires:	mysql-devel}
+%{?_with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	ucd-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.6j
 #PreReq:	-
@@ -32,10 +32,33 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	_sysconfdir	/etc/%{name}
 
 %description
-none yet
+
+ZABBIX is software that monitors numerous parameters of a network and
+the servers on that network. ZABBIX is a useful tool for monitoring
+the health and integrity of servers. ZABBIX uses a flexible
+notification mechanism that allows users to configure email based
+alerts for virtually any event. All monitored parameters are stored in
+a database. ZABBIX offers excellent reporting and data visualisation
+features based on the stored data. ZABBIX supports both polling and
+trapping. All ZABBIX reports and statistics, as well as configuration
+parameters, are accessed through a web-based front end.
+
+%description
+
+zabbix to oprogramowanie do monitorowania licznych parametrów sieci i
+serwerów sieciowych. zabbix jest przydatny przy monitorowaniu
+dzia³ania serwerów. zabbix korzysta z elastycznego mechanizmu
+powiadamiania, który pozwala u¿ytkownikom konfigurowaæ powiadamianie
+poczt± elektroniczn± dla praktycznie wszelkich zdarzeñ. Monitorowane
+parametry s± przechowywane w bazie danych. zabbix oferuje, w oparciu o
+przechowywane dane, ¶wietne raportowanie i funkcje wizualizacji.
+zabbix wspiera zarówno odpytywanie, jak i pu³apkowanie. Dostêp do
+wszystkich raportów i statystyk zabbiksa jest mo¿liwy poprzez
+interfejs oparty o WWW.
 
 %package frontend-php
 Summary:	PHP frontend for zabbix
+Summary(pl):	Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
 Requires:	apache
 Requires:	php
@@ -45,6 +68,7 @@ blah
 
 %package agent-inetd
 Summary:	inetd agent for zabbix
+Summary(pl):	Wersja inetd agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name}
 Requires:	inetdaemon
@@ -54,7 +78,8 @@ Obsoletes:	%{name}-agent-standalone
 blah
 
 %package agent-standalone
-Summary:	standalone agent for zabbix
+Summary:	Standalone agent for zabbix
+Summary(pl):	Wersja wolnostoj±ca agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name}
 Obsoletes:	%{name}-agent-inetd
@@ -66,14 +91,15 @@ blah
 Summary:	sucker daemon for zabbix
 Group:		Networking/Admin
 Requires:	%{name}
-%{!?_with_pgsql:Requires:   mysql}
-%{?_with_pgsql:Requires:   postgresql}
+%{!?_with_pgsql:Requires:	mysql}
+%{?_with_pgsql:Requires:	postgresql}
 
 %description suckerd
 blah
 
 %package trapper-inetd
 Summary:	inetd trapper for zabbix
+Summary(pl):	Wersja inetd programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name}
 Requires:	inetdaemon
@@ -83,7 +109,8 @@ Obsoletes:	%{name}-trapper-standalone
 blah
 
 %package trapper-standalone
-Summary:	standalone trapper for zabbix
+Summary:	Standalone trapper for zabbix
+Summary(pl):	Wersja wolnostoj±ca programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name}
 Obsoletes:	%{name}-trapper-inetd
@@ -93,6 +120,7 @@ blah
 
 %package sender
 Summary:	zabbix's sender
+Summary(pl):	Program zawiadamiaj±cy zabbiksa
 Group:		Networking/Admin
 
 %description sender
