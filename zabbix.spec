@@ -1,6 +1,6 @@
 #
 # Conditional build:
-# _with_mysql - enable postgresql support (by default use mysql)
+# _with_pgsql - enable postgresql support (by default use mysql)
 #
 %define	_beta	beta8
 Summary:	zabbix
@@ -14,12 +14,12 @@ Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}%{_beta}.tar.gz
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
-%{!?_with_mysql:BuildRequires:   mysql-devel}
-%{?_with_mysql:BuildRequires:   postgresql-devel}
+%{!?_with_pgsql:BuildRequires:   mysql-devel}
+%{?_with_pgsql:BuildRequires:   postgresql-devel}
 BuildRequires:	ucd-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.6j
-#PreReq:		-
-Requires:	%{name}-common
+#PreReq:	-
+#Requires	-
 #Requires(pre,post):	-
 #Requires(preun):	-
 #Requires(postun):	-
@@ -33,13 +33,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 none yet
 
-%package common
-Summary:	zabbix common
-Group:		Networking/Admin
-
-%description common
-blah
-
 %package frontend-php
 Summary:	PHP frontend for zabbix
 Group:		Networking/Admin
@@ -52,7 +45,7 @@ blah
 %package agent-inetd
 Summary:	inetd agent for zabbix
 Group:		Networking/Admin
-Requires:	%{name}-common
+Requires:	%{name}
 Requires:	inetdaemon
 Obsoletes:	%{name}-agent-standalone
 
@@ -62,7 +55,7 @@ blah
 %package agent-standalone
 Summary:	standalone agent for zabbix
 Group:		Networking/Admin
-Requires:	%{name}-common
+Requires:	%{name}
 Obsoletes:	%{name}-agent-inetd
 
 %description agent-standalone
@@ -72,6 +65,8 @@ blah
 Summary:	sucker daemon for zabbix
 Group:		Networking/Admin
 Requires:	%{name}
+%{!?_with_pgsql:Requires:   mysql}
+%{?_with_pgsql:Requires:   postgresql}
 
 %description suckerd
 blah
@@ -110,8 +105,8 @@ rm -f missing
 %{__aclocal}
 %{__autoconf}
 %configure \
-	%{!?_with_mysql:--with-pgsql} \
-	%{?_with_mysql:--with-mysql}
+	%{!?_with_pgsql:--with-mysql} \
+	%{?_with_pgsql:--with-pgsql}
 
 %{__make}
 
@@ -129,7 +124,7 @@ install %SOURCE2 $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre common
+%pre
 if [ -z "`/usr/bin/getgid zabbix`" ]; then
 	/usr/sbin/groupadd zabbix
 fi
@@ -137,7 +132,7 @@ if [ -z "`/bin/id -u zabbix 2>/dev/null`" ]; then
 	/usr/sbin/useradd -d / -g zabbix -c "Zabbix User" -s /bin/false zabbix
 fi
 
-%postun common
+%postun
 if [ "$1" = "0" ]; then
 	/usr/sbin/userdel zabbix
 	/usr/sbin/groupdel zabbix
@@ -170,9 +165,6 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc doc/manual.pdf AUTHORS ChangeLog FAQ TODO create bin/ZabbixW32.exe
-
-%files common
-%defattr(644,root,root,755)
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 
 %files frontend-php
