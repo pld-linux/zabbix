@@ -32,19 +32,17 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	_sysconfdir	/etc/%{name}
 
 %description
-
-ZABBIX is software that monitors numerous parameters of a network and
-the servers on that network. ZABBIX is a useful tool for monitoring
-the health and integrity of servers. ZABBIX uses a flexible
+zabbix is software that monitors numerous parameters of a network and
+the servers on that network. zabbix is a useful tool for monitoring
+the health and integrity of servers. zabbix uses a flexible
 notification mechanism that allows users to configure email based
 alerts for virtually any event. All monitored parameters are stored in
-a database. ZABBIX offers excellent reporting and data visualisation
-features based on the stored data. ZABBIX supports both polling and
-trapping. All ZABBIX reports and statistics, as well as configuration
+a database. zabbix offers excellent reporting and data visualisation
+features based on the stored data. zabbix supports both polling and
+trapping. All zabbix reports and statistics, as well as configuration
 parameters, are accessed through a web-based front end.
 
-%description
-
+%description -l pl
 zabbix to oprogramowanie do monitorowania licznych parametrów sieci i
 serwerów sieciowych. zabbix jest przydatny przy monitorowaniu
 dzia³ania serwerów. zabbix korzysta z elastycznego mechanizmu
