@@ -129,9 +129,6 @@ This package provides the zabbix sender.
 %setup -q -n %{name}-%{version}%{_beta}
 
 %build
-rm -f missing
-%{__aclocal}
-%{__autoconf}
 %configure \
 	%{!?with_pgsql:--with-mysql} \
 	%{?with_pgsql:--with-pgsql} \
