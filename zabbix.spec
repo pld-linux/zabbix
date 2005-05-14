@@ -1,3 +1,7 @@
+# TODO
+# - initscript for zabbix-agent-standalone 
+# - missing zabbix_agentd.conf, zabbix_trapperd.conf
+#   see http://www.zabbix.com/manual_install_server.php
 #
 # Conditional build:
 %bcond_with pgsql 	# enable PostgreSQL support (by default use mysql)
@@ -6,7 +10,7 @@ Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.0
-Release:	0.2
+Release:	0.12
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
@@ -18,7 +22,7 @@ URL:		http://zabbix.sourceforge.net/
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.194
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
@@ -30,7 +34,7 @@ Provides:	user(zabbix)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
-%define		htmldir		/home/services/html/zabbix
+%define		htmldir		/home/services/httpd/html/%{name}
 
 %description
 zabbix is software that monitors numerous parameters of a network and
@@ -180,6 +184,24 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 111 zabbix
 %useradd -d / -u 111 -g zabbix -c "Zabbix User" -s /bin/false zabbix
 
+%post
+#if [ "$1" = 1 ]; then
+	%banner -e %{name} <<-EOF
+	You should create database for Zabbix.
+	Running these should be fine in most cases:
+%if %{with pgsql}
+	psql -c 'create database zabbix'
+	zcat %{_docdir}/%{name}-%{version}/create/pgsql/schema.sql.gz | psql zabbix
+	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | psql zabbix
+%else
+	mysqladmin create zabbix
+	zcat %{_docdir}/%{name}-%{version}/create/mysql/schema.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | mysql zabbix
+%endif
+	%{?TODO:You also need zabbix-agent. install zabbix-agent-standalone %or zabbix-agent-inetd.}
+EOF
+#fi
+
 %postun
 if [ "$1" = "0" ]; then
 	%userremove zabbix
@@ -217,7 +239,18 @@ fi
 
 %files frontend-php
 %defattr(644,root,root,755)
-%{htmldir}
+%dir %{htmldir}
+%{htmldir}/*.php
+%{htmldir}/*.css
+%{htmldir}/audio
+%{htmldir}/images
+
+%dir %{htmldir}/include
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{htmldir}/include/db.inc.php
+%{htmldir}/include/.htaccess
+%{htmldir}/include/classes.inc.php
+%{htmldir}/include/config.inc.php
+%{htmldir}/include/defines.inc.php
 
 %files agent-inetd
 %defattr(644,root,root,755)
