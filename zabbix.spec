@@ -2,16 +2,15 @@
 # Conditional build:
 %bcond_with pgsql 	# enable PostgreSQL support (by default use mysql)
 #
-%define	_beta	beta14
 Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.0
-Release:	0.%{_beta}.2
+Release:	0.2
 License:	GPL v2+
 Group:		Networking/Admin
-Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}%{_beta}.tar.gz
-# Source0-md5:	0ac320c6cd99f801d8cb7923ca790419
+Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+# Source0-md5:	e83a3b92f13942081ed2f3fe3f3084d8
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
@@ -62,6 +61,7 @@ Summary(pl):	Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
 Requires:	apache
 Requires:	php
+Requires:	php-gd
 %{!?with_pgsql:Requires:	php-mysql}
 %{?with_pgsql:Requires:	php-pgsql}
 
@@ -152,7 +152,7 @@ This package provides the zabbix sender.
 Ten pakiet zawiera program zawiadamiaj±cy zabbiksa.
 
 %prep
-%setup -q -n %{name}-%{version}%{_beta}
+%setup -q
 
 %build
 %configure \
@@ -212,7 +212,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/Zabbix\ Manual.pdf AUTHORS ChangeLog FAQ TODO create bin/ZabbixW32.exe
+%doc doc/Zabbix\ Manual.pdf AUTHORS NEWS README ChangeLog create upgrades bin/ZabbixW32.exe
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 
 %files frontend-php
