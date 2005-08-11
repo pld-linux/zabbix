@@ -4,7 +4,7 @@
 #   see http://www.zabbix.com/manual_install_server.php
 #
 # Conditional build:
-%bcond_with pgsql 	# enable PostgreSQL support (by default use mysql)
+%bcond_with	pgsql 	# enable PostgreSQL support (by default use mysql)
 #
 Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
