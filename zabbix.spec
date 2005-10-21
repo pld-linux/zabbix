@@ -13,7 +13,7 @@ Version:	1.0
 Release:	0.12
 License:	GPL v2+
 Group:		Networking/Admin
-Source0:	http://dl.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
 # Source0-md5:	e83a3b92f13942081ed2f3fe3f3084d8
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
@@ -79,7 +79,7 @@ Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 Summary:	inetd agent for zabbix
 Summary(pl):	Wersja inetd agenta zabbiksa
 Group:		Networking/Admin
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
 Obsoletes:	%{name}-agent-standalone
 
@@ -93,7 +93,7 @@ Ten pakiet dostarcza agenta zabbiksa dla inetd.
 Summary:	Standalone agent for zabbix
 Summary(pl):	Wersja wolnostoj±ca agenta zabbiksa
 Group:		Networking/Admin
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-agent-inetd
 
 %description agent-standalone
@@ -106,7 +106,7 @@ Ten pakiet dostarcza wolnostoj±cej wersji agenta zabbiksa.
 Summary:	sucker daemon for zabbix
 Summary(pl):	Demon sucker dla zabbiksa
 Group:		Networking/Admin
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 %{!?with_pgsql:Requires:	mysql}
 %{?with_pgsql:Requires:	postgresql}
 
@@ -120,7 +120,7 @@ Ten pakiet zawiera demona sucker dla zabbiksa.
 Summary:	inetd trapper for zabbix
 Summary(pl):	Wersja inetd programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
 Obsoletes:	%{name}-trapper-standalone
 
@@ -134,7 +134,7 @@ Ten pakiet zawiera program pu³apkuj±cy zabbiksa dla inetd.
 Summary:	Standalone trapper for zabbix
 Summary(pl):	Wersja wolnostoj±ca programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-trapper-inetd
 
 %description trapper-standalone
