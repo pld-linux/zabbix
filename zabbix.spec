@@ -63,7 +63,7 @@ interfejs oparty o WWW.
 Summary:	PHP frontend for zabbix
 Summary(pl):	Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
-Requires:	apache
+Requires:	webserver = apache
 Requires:	php
 Requires:	php-gd
 %{!?with_pgsql:Requires:	php-mysql}
