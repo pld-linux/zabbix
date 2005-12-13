@@ -1,5 +1,5 @@
 # TODO
-# - initscript for zabbix-agent-standalone 
+# - initscript for zabbix-agent-standalone
 # - missing zabbix_agentd.conf, zabbix_trapperd.conf
 #   see http://www.zabbix.com/manual_install_server.php
 #
@@ -19,16 +19,16 @@ Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
 %{!?with_pgsql:BuildRequires:	mysql-devel}
-%{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.7d
+%{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.194
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
 Provides:	group(zabbix)
 Provides:	user(zabbix)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -63,11 +63,11 @@ interfejs oparty o WWW.
 Summary:	PHP frontend for zabbix
 Summary(pl):	Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
-Requires:	webserver = apache
 Requires:	php
 Requires:	php-gd
 %{!?with_pgsql:Requires:	php-mysql}
 %{?with_pgsql:Requires:	php-pgsql}
+Requires:	webserver = apache
 
 %description frontend-php
 This package provides web based (PHP) frontend for zabbix.
@@ -255,7 +255,7 @@ fi
 %files agent-inetd
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
-%attr(640,root,root) %config(noreplace) %verify(not mtime md5 size) /etc/sysconfig/rc-inetd/zabbix-agent
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
 %attr(755,root,root) %{_sbindir}/zabbix_agent
 
 %files agent-standalone
@@ -271,7 +271,7 @@ fi
 %files trapper-inetd
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_trapper.conf
-%attr(640,root,root) %config(noreplace) %verify(not mtime md5 size) /etc/sysconfig/rc-inetd/zabbix-trapper
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-trapper
 %attr(755,root,root) %{_sbindir}/zabbix_trapper
 
 %files trapper-standalone
