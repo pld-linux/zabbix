@@ -22,7 +22,7 @@ URL:		http://zabbix.sourceforge.net/
 BuildRequires:	net-snmp-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	rpmbuild(macros) >= 1.194
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
@@ -81,7 +81,7 @@ Summary(pl):	Wersja inetd agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
-Obsoletes:	%{name}-agent-standalone
+Obsoletes:	zabbix-agent-standalone
 
 %description agent-inetd
 This package provides inetd version of zabbix agent.
@@ -94,7 +94,7 @@ Summary:	Standalone agent for zabbix
 Summary(pl):	Wersja wolnostoj±ca agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
-Obsoletes:	%{name}-agent-inetd
+Obsoletes:	zabbix-agent-inetd
 
 %description agent-standalone
 This package provides standalone version of zabbix agent.
@@ -122,7 +122,7 @@ Summary(pl):	Wersja inetd programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
-Obsoletes:	%{name}-trapper-standalone
+Obsoletes:	zabbix-trapper-standalone
 
 %description trapper-inetd
 This package provides inetd version of zabbix trapper.
@@ -135,7 +135,7 @@ Summary:	Standalone trapper for zabbix
 Summary(pl):	Wersja wolnostoj±ca programu pu³apkuj±cego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
-Obsoletes:	%{name}-trapper-inetd
+Obsoletes:	zabbix-trapper-inetd
 
 %description trapper-standalone
 This package provides standalone version of zabbix trapper.
@@ -185,7 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 %useradd -d / -u 111 -g zabbix -c "Zabbix User" -s /bin/false zabbix
 
 %post
-#if [ "$1" = 1 ]; then
+if [ "$1" = 1 ]; then
 	%banner -e %{name} <<-EOF
 	You should create database for Zabbix.
 	Running these should be fine in most cases:
@@ -200,7 +200,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 	%{?TODO:You also need zabbix-agent. install zabbix-agent-standalone %or zabbix-agent-inetd.}
 EOF
-#fi
+fi
 
 %postun
 if [ "$1" = "0" ]; then
@@ -209,27 +209,19 @@ if [ "$1" = "0" ]; then
 fi
 
 %post agent-inetd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
+%service -q rc-inetd reload
 
 %postun agent-inetd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
+if [ "$1" = 0 ]; then
+	%service -q rc-inetd reload
 fi
 
 %post trapper-inetd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
+%service -q rc-inetd reload
 
 %postun trapper-inetd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
+if [ "$1" = 0 ]; then
+	%service -q rc-inetd reload
 fi
 
 %files
