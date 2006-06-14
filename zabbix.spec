@@ -5,16 +5,18 @@
 #
 # Conditional build:
 %bcond_with	pgsql 	# enable PostgreSQL support (by default use mysql)
+%bcond_with	oracle 	# enable Oracle support (by default use mysql)
+
 #
 Summary:	zabbix - network monitoring software
 Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	1.0
-Release:	0.12
+Version:	1.1
+Release:	0.1
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	e83a3b92f13942081ed2f3fe3f3084d8
+# Source0-md5:	9697e5634547d9614963db04f6cd87d7
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
@@ -162,20 +164,27 @@ Ten pakiet zawiera program zawiadamiaj±cy zabbiksa.
 %configure \
 	%{!?with_pgsql:--with-mysql} \
 	%{?with_pgsql:--with-pgsql} \
-	--with-net-snmp
+	%{?with_oracle:--with-oracle} \
+	--enable-server \
+	--enable-agent \
+	--with-net-snmp \
+#	--with-ldap=DIR \
+#	--with-ucd-snmp=DIR \
 
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/sysconfig/rc-inetd,%{_sbindir},%{htmldir}}
 
-install bin/zabbix_* $RPM_BUILD_ROOT%{_sbindir}
-install misc/conf/* $RPM_BUILD_ROOT%{_sysconfdir}
-cp -r frontends/php/* $RPM_BUILD_ROOT%{htmldir}
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
+#install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/sysconfig/rc-inetd,%{_sbindir},%{htmldir}}
+#install bin/zabbix_* $RPM_BUILD_ROOT%{_sbindir}
+#install misc/conf/* $RPM_BUILD_ROOT%{_sysconfdir}
+#cp -r frontends/php/* $RPM_BUILD_ROOT%{htmldir}
+#install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
+#install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
 
 %clean
 rm -rf $RPM_BUILD_ROOT
