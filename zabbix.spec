@@ -9,7 +9,7 @@
 
 #
 Summary:	zabbix - network monitoring software
-Summary(pl):	zabbix - oprogramowanie do monitorowania sieci
+Summary(pl.UTF-8):   zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.1
 Release:	0.1
@@ -49,21 +49,21 @@ features based on the stored data. zabbix supports both polling and
 trapping. All zabbix reports and statistics, as well as configuration
 parameters, are accessed through a web-based front end.
 
-%description -l pl
-zabbix to oprogramowanie do monitorowania licznych parametrów sieci i
-serwerów sieciowych. zabbix jest przydatny przy monitorowaniu
-dzia³ania serwerów. zabbix korzysta z elastycznego mechanizmu
-powiadamiania, który pozwala u¿ytkownikom konfigurowaæ powiadamianie
-poczt± elektroniczn± dla praktycznie wszelkich zdarzeñ. Monitorowane
-parametry s± przechowywane w bazie danych. zabbix oferuje, w oparciu o
-przechowywane dane, ¶wietne raportowanie i funkcje wizualizacji.
-zabbix wspiera zarówno odpytywanie, jak i pu³apkowanie. Dostêp do
-wszystkich raportów i statystyk zabbiksa jest mo¿liwy poprzez
+%description -l pl.UTF-8
+zabbix to oprogramowanie do monitorowania licznych parametrÃ³w sieci i
+serwerÃ³w sieciowych. zabbix jest przydatny przy monitorowaniu
+dziaÅ‚ania serwerÃ³w. zabbix korzysta z elastycznego mechanizmu
+powiadamiania, ktÃ³ry pozwala uÅ¼ytkownikom konfigurowaÄ‡ powiadamianie
+pocztÄ… elektronicznÄ… dla praktycznie wszelkich zdarzeÅ„. Monitorowane
+parametry sÄ… przechowywane w bazie danych. zabbix oferuje, w oparciu o
+przechowywane dane, Å›wietne raportowanie i funkcje wizualizacji.
+zabbix wspiera zarÃ³wno odpytywanie, jak i puÅ‚apkowanie. DostÄ™p do
+wszystkich raportÃ³w i statystyk zabbiksa jest moÅ¼liwy poprzez
 interfejs oparty o WWW.
 
 %package frontend-php
 Summary:	PHP frontend for zabbix
-Summary(pl):	Interfejs PHP dla zabbiksa
+Summary(pl.UTF-8):   Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
 Requires:	php(gd)
 %{!?with_pgsql:Requires:	php-mysql}
@@ -74,12 +74,12 @@ Requires:	webserver(php)
 %description frontend-php
 This package provides web based (PHP) frontend for zabbix.
 
-%description frontend-php -l pl
+%description frontend-php -l pl.UTF-8
 Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 
 %package agent-inetd
 Summary:	inetd agent for zabbix
-Summary(pl):	Wersja inetd agenta zabbiksa
+Summary(pl.UTF-8):   Wersja inetd agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
@@ -88,12 +88,12 @@ Obsoletes:	zabbix-agent-standalone
 %description agent-inetd
 This package provides inetd version of zabbix agent.
 
-%description agent-inetd -l pl
+%description agent-inetd -l pl.UTF-8
 Ten pakiet dostarcza agenta zabbiksa dla inetd.
 
 %package agent-standalone
 Summary:	Standalone agent for zabbix
-Summary(pl):	Wersja wolnostoj±ca agenta zabbiksa
+Summary(pl.UTF-8):   Wersja wolnostojÄ…ca agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-agent-inetd
@@ -101,12 +101,12 @@ Obsoletes:	zabbix-agent-inetd
 %description agent-standalone
 This package provides standalone version of zabbix agent.
 
-%description agent-standalone -l pl
-Ten pakiet dostarcza wolnostoj±cej wersji agenta zabbiksa.
+%description agent-standalone -l pl.UTF-8
+Ten pakiet dostarcza wolnostojÄ…cej wersji agenta zabbiksa.
 
 %package suckerd
 Summary:	sucker daemon for zabbix
-Summary(pl):	Demon sucker dla zabbiksa
+Summary(pl.UTF-8):   Demon sucker dla zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 %{!?with_pgsql:Requires:	mysql}
@@ -115,12 +115,12 @@ Requires:	%{name} = %{version}-%{release}
 %description suckerd
 This package provides the sucker daemon for zabbix.
 
-%description suckerd -l pl
+%description suckerd -l pl.UTF-8
 Ten pakiet zawiera demona sucker dla zabbiksa.
 
 %package trapper-inetd
 Summary:	inetd trapper for zabbix
-Summary(pl):	Wersja inetd programu pu³apkuj±cego zabbiksa
+Summary(pl.UTF-8):   Wersja inetd programu puÅ‚apkujÄ…cego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
@@ -129,12 +129,12 @@ Obsoletes:	zabbix-trapper-standalone
 %description trapper-inetd
 This package provides inetd version of zabbix trapper.
 
-%description trapper-inetd -l pl
-Ten pakiet zawiera program pu³apkuj±cy zabbiksa dla inetd.
+%description trapper-inetd -l pl.UTF-8
+Ten pakiet zawiera program puÅ‚apkujÄ…cy zabbiksa dla inetd.
 
 %package trapper-standalone
 Summary:	Standalone trapper for zabbix
-Summary(pl):	Wersja wolnostoj±ca programu pu³apkuj±cego zabbiksa
+Summary(pl.UTF-8):   Wersja wolnostojÄ…ca programu puÅ‚apkujÄ…cego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-trapper-inetd
@@ -142,20 +142,20 @@ Obsoletes:	zabbix-trapper-inetd
 %description trapper-standalone
 This package provides standalone version of zabbix trapper.
 
-%description trapper-standalone -l pl
-Ten pakiet zawiera wolnostoj±c± wersjê programu pu³apkuj±cego
+%description trapper-standalone -l pl.UTF-8
+Ten pakiet zawiera wolnostojÄ…cÄ… wersjÄ™ programu puÅ‚apkujÄ…cego
 zabbiksa.
 
 %package sender
 Summary:	zabbix's sender
-Summary(pl):	Program zawiadamiaj±cy zabbiksa
+Summary(pl.UTF-8):   Program zawiadamiajÄ…cy zabbiksa
 Group:		Networking/Admin
 
 %description sender
 This package provides the zabbix sender.
 
-%description sender -l pl
-Ten pakiet zawiera program zawiadamiaj±cy zabbiksa.
+%description sender -l pl.UTF-8
+Ten pakiet zawiera program zawiadamiajÄ…cy zabbiksa.
 
 %prep
 %setup -q
