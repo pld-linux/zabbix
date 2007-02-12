@@ -9,7 +9,7 @@
 
 #
 Summary:	zabbix - network monitoring software
-Summary(pl.UTF-8):   zabbix - oprogramowanie do monitorowania sieci
+Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.1
 Release:	0.1
@@ -63,7 +63,7 @@ interfejs oparty o WWW.
 
 %package frontend-php
 Summary:	PHP frontend for zabbix
-Summary(pl.UTF-8):   Interfejs PHP dla zabbiksa
+Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
 Group:		Networking/Admin
 Requires:	php(gd)
 %{!?with_pgsql:Requires:	php-mysql}
@@ -79,7 +79,7 @@ Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 
 %package agent-inetd
 Summary:	inetd agent for zabbix
-Summary(pl.UTF-8):   Wersja inetd agenta zabbiksa
+Summary(pl.UTF-8):	Wersja inetd agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
@@ -93,7 +93,7 @@ Ten pakiet dostarcza agenta zabbiksa dla inetd.
 
 %package agent-standalone
 Summary:	Standalone agent for zabbix
-Summary(pl.UTF-8):   Wersja wolnostojąca agenta zabbiksa
+Summary(pl.UTF-8):	Wersja wolnostojąca agenta zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-agent-inetd
@@ -106,7 +106,7 @@ Ten pakiet dostarcza wolnostojącej wersji agenta zabbiksa.
 
 %package suckerd
 Summary:	sucker daemon for zabbix
-Summary(pl.UTF-8):   Demon sucker dla zabbiksa
+Summary(pl.UTF-8):	Demon sucker dla zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 %{!?with_pgsql:Requires:	mysql}
@@ -120,7 +120,7 @@ Ten pakiet zawiera demona sucker dla zabbiksa.
 
 %package trapper-inetd
 Summary:	inetd trapper for zabbix
-Summary(pl.UTF-8):   Wersja inetd programu pułapkującego zabbiksa
+Summary(pl.UTF-8):	Wersja inetd programu pułapkującego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
@@ -134,7 +134,7 @@ Ten pakiet zawiera program pułapkujący zabbiksa dla inetd.
 
 %package trapper-standalone
 Summary:	Standalone trapper for zabbix
-Summary(pl.UTF-8):   Wersja wolnostojąca programu pułapkującego zabbiksa
+Summary(pl.UTF-8):	Wersja wolnostojąca programu pułapkującego zabbiksa
 Group:		Networking/Admin
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-trapper-inetd
@@ -148,7 +148,7 @@ zabbiksa.
 
 %package sender
 Summary:	zabbix's sender
-Summary(pl.UTF-8):   Program zawiadamiający zabbiksa
+Summary(pl.UTF-8):	Program zawiadamiający zabbiksa
 Group:		Networking/Admin
 
 %description sender
