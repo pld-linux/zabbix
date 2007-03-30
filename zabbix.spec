@@ -11,12 +11,12 @@
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	1.1
-Release:	0.1
+Version:	1.1.7
+Release:	1
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	9697e5634547d9614963db04f6cd87d7
+# Source0-md5:	ac24ab58ef1a985c1e2a5217386d5dba
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
@@ -61,22 +61,6 @@ zabbix wspiera zarówno odpytywanie, jak i pułapkowanie. Dostęp do
 wszystkich raportów i statystyk zabbiksa jest możliwy poprzez
 interfejs oparty o WWW.
 
-%package frontend-php
-Summary:	PHP frontend for zabbix
-Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
-Group:		Networking/Admin
-Requires:	php(gd)
-%{!?with_pgsql:Requires:	php-mysql}
-%{?with_pgsql:Requires:	php-pgsql}
-Requires:	webserver = apache
-Requires:	webserver(php)
-
-%description frontend-php
-This package provides web based (PHP) frontend for zabbix.
-
-%description frontend-php -l pl.UTF-8
-Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
-
 %package agent-inetd
 Summary:	inetd agent for zabbix
 Summary(pl.UTF-8):	Wersja inetd agenta zabbiksa
@@ -104,48 +88,6 @@ This package provides standalone version of zabbix agent.
 %description agent-standalone -l pl.UTF-8
 Ten pakiet dostarcza wolnostojącej wersji agenta zabbiksa.
 
-%package suckerd
-Summary:	sucker daemon for zabbix
-Summary(pl.UTF-8):	Demon sucker dla zabbiksa
-Group:		Networking/Admin
-Requires:	%{name} = %{version}-%{release}
-%{!?with_pgsql:Requires:	mysql}
-%{?with_pgsql:Requires:	postgresql}
-
-%description suckerd
-This package provides the sucker daemon for zabbix.
-
-%description suckerd -l pl.UTF-8
-Ten pakiet zawiera demona sucker dla zabbiksa.
-
-%package trapper-inetd
-Summary:	inetd trapper for zabbix
-Summary(pl.UTF-8):	Wersja inetd programu pułapkującego zabbiksa
-Group:		Networking/Admin
-Requires:	%{name} = %{version}-%{release}
-Requires:	inetdaemon
-Obsoletes:	zabbix-trapper-standalone
-
-%description trapper-inetd
-This package provides inetd version of zabbix trapper.
-
-%description trapper-inetd -l pl.UTF-8
-Ten pakiet zawiera program pułapkujący zabbiksa dla inetd.
-
-%package trapper-standalone
-Summary:	Standalone trapper for zabbix
-Summary(pl.UTF-8):	Wersja wolnostojąca programu pułapkującego zabbiksa
-Group:		Networking/Admin
-Requires:	%{name} = %{version}-%{release}
-Obsoletes:	zabbix-trapper-inetd
-
-%description trapper-standalone
-This package provides standalone version of zabbix trapper.
-
-%description trapper-standalone -l pl.UTF-8
-Ten pakiet zawiera wolnostojącą wersję programu pułapkującego
-zabbiksa.
-
 %package sender
 Summary:	zabbix's sender
 Summary(pl.UTF-8):	Program zawiadamiający zabbiksa
@@ -156,6 +98,28 @@ This package provides the zabbix sender.
 
 %description sender -l pl.UTF-8
 Ten pakiet zawiera program zawiadamiający zabbiksa.
+
+%package get
+Summary:        zabbix's get
+#Summary(pl.UTF-8):      Program zawiadamiajÄy zabbiksa
+Group:          Networking/Admin
+
+%description get
+This package provides the zabbix get.
+
+#%description get -l pl.UTF-8
+#Ten pakiet zawiera program zawiadamiajÄy zabbiksa.
+
+%package server
+Summary:        zabbix's server
+Summary(pl.UTF-8):      Serwer zabbiksa
+Group:          Networking/Admin
+
+%description server
+This package provides the zabbix server.
+
+%description server -l pl.UTF-8
+Ten pakiet zawiera serwer zabbiksa.
 
 %prep
 %setup -q
@@ -225,61 +189,31 @@ if [ "$1" = 0 ]; then
 	%service -q rc-inetd reload
 fi
 
-%post trapper-inetd
-%service -q rc-inetd reload
-
-%postun trapper-inetd
-if [ "$1" = 0 ]; then
-	%service -q rc-inetd reload
-fi
-
 %files
 %defattr(644,root,root,755)
-%doc doc/Zabbix\ Manual.pdf AUTHORS NEWS README ChangeLog create upgrades bin/ZabbixW32.exe
-%attr(750,root,zabbix) %dir %{_sysconfdir}
-
-%files frontend-php
-%defattr(644,root,root,755)
-%dir %{htmldir}
-%{htmldir}/*.php
-%{htmldir}/*.css
-%{htmldir}/audio
-%{htmldir}/images
-
-%dir %{htmldir}/include
-%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{htmldir}/include/db.inc.php
-%{htmldir}/include/.htaccess
-%{htmldir}/include/classes.inc.php
-%{htmldir}/include/config.inc.php
-%{htmldir}/include/defines.inc.php
+#%doc doc/Zabbix\ Manual.pdf AUTHORS NEWS README ChangeLog create upgrades bin/ZabbixW32.exe
+#%attr(750,root,zabbix) %dir %{_sysconfdir}
+%{_libdir}/*.a
 
 %files agent-inetd
 %defattr(644,root,root,755)
-%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
-%attr(755,root,root) %{_sbindir}/zabbix_agent
+#%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
+#%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
+%attr(755,root,root) %{_bindir}/zabbix_agent
 
 %files agent-standalone
 %defattr(644,root,root,755)
-%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
-%attr(755,root,root) %{_sbindir}/zabbix_agentd
-
-%files suckerd
-%defattr(644,root,root,755)
-%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_suckerd.conf
-%attr(755,root,root) %{_sbindir}/zabbix_suckerd
-
-%files trapper-inetd
-%defattr(644,root,root,755)
-%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_trapper.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-trapper
-%attr(755,root,root) %{_sbindir}/zabbix_trapper
-
-%files trapper-standalone
-%defattr(644,root,root,755)
-%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_trapperd.conf
-%attr(755,root,root) %{_sbindir}/zabbix_trapperd
+#%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
+%attr(755,root,root) %{_bindir}/zabbix_agentd
 
 %files sender
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/zabbix_sender
+%attr(755,root,root) %{_bindir}/zabbix_sender
+
+%files get
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/zabbix_get
+
+%files server
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/zabbix_server
