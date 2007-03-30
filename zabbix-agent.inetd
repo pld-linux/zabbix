@@ -5,4 +5,4 @@ PORT=10000
 FLAGS=nowait
 USER=zabbix
 SERVER=tcpd
-DAEMON=/usr/sbin/zabbix_agent
+DAEMON=/usr/bin/zabbix_agent
