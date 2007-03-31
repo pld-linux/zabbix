@@ -1,13 +1,10 @@
 # TODO
-# - initscript for zabbix-agent-standalone
-# - missing zabbix_agentd.conf, zabbix_trapperd.conf
-#   see http://www.zabbix.com/manual_install_server.php
+# - initscript for zabbix-agent-standalone and zabbix-server
 #
 # Conditional build:
 %bcond_with	pgsql 	# enable PostgreSQL support (by default use mysql)
 %bcond_with	oracle 	# enable Oracle support (by default use mysql)
 
-#
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
@@ -18,9 +15,11 @@ Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
 # Source0-md5:	ac24ab58ef1a985c1e2a5217386d5dba
 Source1:	%{name}-agent.inetd
+Source2:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
 %{!?with_pgsql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
+BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -35,7 +34,9 @@ Provides:	user(zabbix)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
-%define		htmldir		/home/services/httpd/html/%{name}
+%define		_appdir		%{_datadir}/%{name}
+%define		_webapps	/etc/webapps
+%define		_webapp		%{name}
 
 %description
 zabbix is software that monitors numerous parameters of a network and
@@ -81,13 +82,41 @@ Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-agent-inetd
 
 %description agent-standalone
-This package provides standalone version of zabbix agent.
+This package provides standalone (recommended) version of zabbix agent.
 
 %description agent-standalone -l pl.UTF-8
-Ten pakiet dostarcza wolnostojącej wersji agenta zabbiksa.
+Ten pakiet dostarcza wolnostojącej (zalecanej) wersji agenta zabbiksa.
+
+%package frontend-php
+Summary:	PHP frontend for zabbix
+Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
+Group:		Networking/Admin
+Requires:	php(gd)
+%{!?with_pgsql:Requires:	php-mysql}
+%{?with_pgsql:Requires:	php-pgsql}
+Requires:	webapps
+Requires:	webserver = apache
+Requires:	webserver(php)
+
+%description frontend-php
+This package provides web based (PHP) frontend for zabbix.
+
+%description frontend-php -l pl.UTF-8
+Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
+
+%package get
+Summary:	Program retrieving data from zabbix agent
+Summary(pl.UTF-8):	Program odpytujÄcy agenta zabbiksa
+Group:		Networking/Admin
+
+%description get
+This package provides a program retrieving data from zabbix agent.
+
+%description get -l pl.UTF-8
+Ten pakiet zawiera program odpytujÄcy agenta zabbiksa.
 
 %package sender
-Summary:	zabbix's sender
+Summary:	Zabbix sender
 Summary(pl.UTF-8):	Program zawiadamiający zabbiksa
 Group:		Networking/Admin
 
@@ -97,21 +126,11 @@ This package provides the zabbix sender.
 %description sender -l pl.UTF-8
 Ten pakiet zawiera program zawiadamiający zabbiksa.
 
-%package get
-Summary:        zabbix's get
-#Summary(pl.UTF-8):      Program zawiadamiajÄy zabbiksa
-Group:          Networking/Admin
-
-%description get
-This package provides the zabbix get.
-
-#%description get -l pl.UTF-8
-#Ten pakiet zawiera program zawiadamiajÄy zabbiksa.
-
 %package server
-Summary:        zabbix's server
-Summary(pl.UTF-8):      Serwer zabbiksa
-Group:          Networking/Admin
+Summary:	Zabbix server
+Summary(pl.UTF-8):	Serwer zabbiksa
+Group:		Networking/Admin
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-suckerd
 Obsoletes:	%{name}-trapper-inetd
 Obsoletes:	%{name}-trapper-standalone
@@ -133,26 +152,40 @@ Ten pakiet zawiera serwer zabbiksa.
 	--enable-server \
 	--enable-agent \
 	--with-net-snmp \
-#	--with-ldap=DIR \
+	--with-ldap \
 #	--with-ucd-snmp=DIR \
 
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/{sysconfig/rc-inetd,webapps/%{_webapp}},%{_appdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-#install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/sysconfig/rc-inetd,%{_sbindir},%{htmldir}}
-#install bin/zabbix_* $RPM_BUILD_ROOT%{_sbindir}
-#install misc/conf/* $RPM_BUILD_ROOT%{_sysconfdir}
-#cp -r frontends/php/* $RPM_BUILD_ROOT%{htmldir}
-#install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
-#install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-trapper
+install misc/conf/zabbix_{a*,s*} $RPM_BUILD_ROOT%{_sysconfdir}
+cp -r frontends $RPM_BUILD_ROOT%{_appdir}
+mv -f $RPM_BUILD_ROOT%{_appdir}/frontends/php/include/db.inc.php $RPM_BUILD_ROOT%{_webapps}/%{_webapp}
+ln -s %{_webapps}/%{_webapp}/db.inc.php $RPM_BUILD_ROOT%{_appdir}/frontends/php/include
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
+install %{SOURCE2} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%triggerin frontend-php -- apache1 < 1.3.37-3, apache1-base
+%webapp_register apache %{_webapp}
+
+%triggerun frontend-php -- apache1 < 1.3.37-3, apache1-base
+%webapp_unregister apache %{_webapp}
+
+%triggerin frontend-php -- apache < 2.2.0, apache-base
+%webapp_register httpd %{_webapp}
+
+%triggerun frontend-php -- apache < 2.2.0, apache-base
+%webapp_unregister httpd %{_webapp}
 
 %pre
 %groupadd -g 111 zabbix
@@ -165,7 +198,7 @@ if [ "$1" = 1 ]; then
 	Running these should be fine in most cases:
 %if %{with pgsql}
 	psql -c 'create database zabbix'
-	zcat %{_docdir}/%{name}-%{version}/create/pgsql/schema.sql.gz | psql zabbix
+	zcat %{_docdir}/%{name}-%{version}/create/postgresql/schema.sql.gz | psql zabbix
 	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | psql zabbix
 %else
 	mysqladmin create zabbix
@@ -192,29 +225,36 @@ fi
 
 %files
 %defattr(644,root,root,755)
-#%doc doc/Zabbix\ Manual.pdf AUTHORS NEWS README ChangeLog create upgrades bin/ZabbixW32.exe
-#%attr(750,root,zabbix) %dir %{_sysconfdir}
-%{_libdir}/*.a
+%doc AUTHORS FAQ NEWS README ChangeLog create upgrades bin/ZabbixW{32,64}.exe
+%attr(750,root,zabbix) %dir %{_sysconfdir}
+%dir %{_appdir}/frontends
 
 %files agent-inetd
 %defattr(644,root,root,755)
-#%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
-#%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
 %attr(755,root,root) %{_bindir}/zabbix_agent
 
 %files agent-standalone
 %defattr(644,root,root,755)
-#%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
 %attr(755,root,root) %{_bindir}/zabbix_agentd
 
-%files sender
+%files frontend-php
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/zabbix_sender
+%attr(750,root,http) %dir %{_webapps}/%{_webapp}
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/*
+%{_appdir}/frontends/php
 
 %files get
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/zabbix_get
 
+%files sender
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/zabbix_sender
+
 %files server
 %defattr(644,root,root,755)
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
 %attr(755,root,root) %{_bindir}/zabbix_server
