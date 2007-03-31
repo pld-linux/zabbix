@@ -18,7 +18,6 @@ Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
 # Source0-md5:	ac24ab58ef1a985c1e2a5217386d5dba
 Source1:	%{name}-agent.inetd
-Source2:	%{name}-trapper.inetd
 URL:		http://zabbix.sourceforge.net/
 %{!?with_pgsql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
@@ -40,7 +39,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 zabbix is software that monitors numerous parameters of a network and
-the servers on that network. zabbix is a useful tool for monitoring
+the servers on that network. It is a useful tool for monitoring
 the health and integrity of servers. zabbix uses a flexible
 notification mechanism that allows users to configure email based
 alerts for virtually any event. All monitored parameters are stored in
@@ -51,15 +50,14 @@ parameters, are accessed through a web-based front end.
 
 %description -l pl.UTF-8
 zabbix to oprogramowanie do monitorowania licznych parametrów sieci i
-serwerów sieciowych. zabbix jest przydatny przy monitorowaniu
-działania serwerów. zabbix korzysta z elastycznego mechanizmu
-powiadamiania, który pozwala użytkownikom konfigurować powiadamianie
-pocztą elektroniczną dla praktycznie wszelkich zdarzeń. Monitorowane
-parametry są przechowywane w bazie danych. zabbix oferuje, w oparciu o
-przechowywane dane, świetne raportowanie i funkcje wizualizacji.
-zabbix wspiera zarówno odpytywanie, jak i pułapkowanie. Dostęp do
-wszystkich raportów i statystyk zabbiksa jest możliwy poprzez
-interfejs oparty o WWW.
+serwerów sieciowych. Jest przydatny przy monitorowaniu działania
+serwerów. Jorzysta z elastycznego mechanizmu powiadamiania, który
+pozwala użytkownikom konfigurować powiadamianie pocztą elektroniczną
+dla praktycznie wszelkich zdarzeń. Monitorowane parametry są
+przechowywane w bazie danych. W oparciu o przechowywane dane zabbix
+oferuje świetne raportowanie i funkcje wizualizacji. Wspiera zarówno
+odpytywanie jak i pułapkowanie. Dostęp do wszystkich raportów i
+statystyk zabbiksa jest możliwy poprzez interfejs oparty o WWW.
 
 %package agent-inetd
 Summary:	inetd agent for zabbix
@@ -114,6 +112,9 @@ This package provides the zabbix get.
 Summary:        zabbix's server
 Summary(pl.UTF-8):      Serwer zabbiksa
 Group:          Networking/Admin
+Obsoletes:	%{name}-suckerd
+Obsoletes:	%{name}-trapper-inetd
+Obsoletes:	%{name}-trapper-standalone
 
 %description server
 This package provides the zabbix server.
