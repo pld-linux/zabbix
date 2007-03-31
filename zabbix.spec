@@ -200,10 +200,12 @@ if [ "$1" = 1 ]; then
 	psql -c 'create database zabbix'
 	zcat %{_docdir}/%{name}-%{version}/create/postgresql/schema.sql.gz | psql zabbix
 	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | psql zabbix
+	zcat %{_docdir}/%{name}-%{version}/create/data/images_pgsql.sql.gz | psql zabbix
 %else
 	mysqladmin create zabbix
 	zcat %{_docdir}/%{name}-%{version}/create/mysql/schema.sql.gz | mysql zabbix
 	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-%{version}/create/data/images.sql.gz | mysql zabbix
 %endif
 	%{?TODO:You also need zabbix-agent. install zabbix-agent-standalone %or zabbix-agent-inetd.}
 EOF
