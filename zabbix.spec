@@ -19,7 +19,7 @@ Source2:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
 %{!?with_pgsql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
-BuildRequires:	openldap-devel
+BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
