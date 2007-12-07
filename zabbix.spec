@@ -229,6 +229,7 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS FAQ NEWS README ChangeLog create upgrades bin/ZabbixW{32,64}.exe
 %attr(750,root,zabbix) %dir %{_sysconfdir}
+%dir %{_appdir}
 %dir %{_appdir}/frontends
 
 %files agent-inetd
