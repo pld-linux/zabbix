@@ -8,12 +8,12 @@
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	1.1.7
-Release:	1
+Version:	1.6.1
+Release:	0.1
 License:	GPL v2+
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	ac24ab58ef1a985c1e2a5217386d5dba
+# Source0-md5:	26a6f8d643b28ca245804ea699924d80
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
@@ -37,6 +37,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_appdir		%{_datadir}/%{name}
 %define		_webapps	/etc/webapps
 %define		_webapp		%{name}
+
+# FIXME
+%define filterout_ld -Wl,--as-needed
 
 %description
 zabbix is software that monitors numerous parameters of a network and
@@ -227,7 +230,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS FAQ NEWS README ChangeLog create upgrades bin/ZabbixW{32,64}.exe
+%doc AUTHORS FAQ NEWS README ChangeLog create upgrades
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 %dir %{_appdir}
 %dir %{_appdir}/frontends
@@ -236,12 +239,12 @@ fi
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
-%attr(755,root,root) %{_bindir}/zabbix_agent
+%attr(755,root,root) %{_sbindir}/zabbix_agent
 
 %files agent-standalone
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
-%attr(755,root,root) %{_bindir}/zabbix_agentd
+%attr(755,root,root) %{_sbindir}/zabbix_agentd
 
 %files frontend-php
 %defattr(644,root,root,755)
@@ -251,13 +254,13 @@ fi
 
 %files get
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/zabbix_get
+%attr(755,root,root) %{_sbindir}/zabbix_get
 
 %files sender
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/zabbix_sender
+%attr(755,root,root) %{_sbindir}/zabbix_sender
 
 %files server
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
-%attr(755,root,root) %{_bindir}/zabbix_server
+%attr(755,root,root) %{_sbindir}/zabbix_server
