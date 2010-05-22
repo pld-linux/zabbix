@@ -11,7 +11,7 @@ Name:		zabbix
 Version:	1.6.7
 Release:	0.1
 License:	GPL v2+
-Group:		Networking/Admin
+Group:		Networking/Utilities
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
 # Source0-md5:	1426fdd40390031e54e14567b1a10876
 Source1:	%{name}-agent.inetd
@@ -66,7 +66,7 @@ statystyk zabbiksa jest możliwy poprzez interfejs oparty o WWW.
 %package agent-inetd
 Summary:	inetd agent for zabbix
 Summary(pl.UTF-8):	Wersja inetd agenta zabbiksa
-Group:		Networking/Admin
+Group:		Networking/Utilities
 Requires:	%{name} = %{version}-%{release}
 Requires:	inetdaemon
 Obsoletes:	zabbix-agent-standalone
@@ -80,7 +80,7 @@ Ten pakiet dostarcza agenta zabbiksa dla inetd.
 %package agent-standalone
 Summary:	Standalone agent for zabbix
 Summary(pl.UTF-8):	Wersja wolnostojąca agenta zabbiksa
-Group:		Networking/Admin
+Group:		Networking/Utilities
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-agent-inetd
 
@@ -93,7 +93,7 @@ Ten pakiet dostarcza wolnostojącej (zalecanej) wersji agenta zabbiksa.
 %package frontend-php
 Summary:	PHP frontend for zabbix
 Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
-Group:		Networking/Admin
+Group:		Applications/WWW
 Requires:	php(gd)
 %{!?with_pgsql:Requires:	php-mysql}
 %{?with_pgsql:Requires:	php-pgsql}
@@ -110,7 +110,7 @@ Ten pakiet dostarcza napisany w PHP frontend dla zabbiksa.
 %package get
 Summary:	Program retrieving data from zabbix agent
 Summary(pl.UTF-8):	Program odpytujÄcy agenta zabbiksa
-Group:		Networking/Admin
+Group:		Networking/Utilities
 
 %description get
 This package provides a program retrieving data from zabbix agent.
@@ -121,7 +121,7 @@ Ten pakiet zawiera program odpytujÄcy agenta zabbiksa.
 %package sender
 Summary:	Zabbix sender
 Summary(pl.UTF-8):	Program zawiadamiający zabbiksa
-Group:		Networking/Admin
+Group:		Networking/Utilities
 
 %description sender
 This package provides the zabbix sender.
@@ -132,7 +132,7 @@ Ten pakiet zawiera program zawiadamiający zabbiksa.
 %package server
 Summary:	Zabbix server
 Summary(pl.UTF-8):	Serwer zabbiksa
-Group:		Networking/Admin
+Group:		Networking/Utilities
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-suckerd
 Obsoletes:	%{name}-trapper-inetd
