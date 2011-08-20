@@ -8,12 +8,12 @@
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	1.6.7
+Version:	1.8.6
 Release:	0.1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	1426fdd40390031e54e14567b1a10876
+# Source0-md5:	4642fd263167211a73a02fe7f3bcd998
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
@@ -167,7 +167,7 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/{sysconfig/rc-inetd,webapps/%{_we
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install misc/conf/zabbix_{a*,s*} $RPM_BUILD_ROOT%{_sysconfdir}
+install misc/conf/zabbix_{a*,s*}.conf $RPM_BUILD_ROOT%{_sysconfdir}
 cp -r frontends $RPM_BUILD_ROOT%{_appdir}
 mv -f $RPM_BUILD_ROOT%{_appdir}/frontends/php/include/db.inc.php $RPM_BUILD_ROOT%{_webapps}/%{_webapp}
 ln -s %{_webapps}/%{_webapp}/db.inc.php $RPM_BUILD_ROOT%{_appdir}/frontends/php/include
@@ -230,7 +230,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS FAQ NEWS README ChangeLog create upgrades
+%doc AUTHORS NEWS README ChangeLog create upgrades
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 %dir %{_appdir}
 %dir %{_appdir}/frontends
@@ -245,6 +245,7 @@ fi
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
 %attr(755,root,root) %{_sbindir}/zabbix_agentd
+%{_mandir}/man8/zabbix_agentd*
 
 %files frontend-php
 %defattr(644,root,root,755)
@@ -254,13 +255,16 @@ fi
 
 %files get
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/zabbix_get
+%attr(755,root,root) %{_bindir}/zabbix_get
+%{_mandir}/man1/zabbix_get*
 
 %files sender
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/zabbix_sender
+%attr(755,root,root) %{_bindir}/zabbix_sender
+%{_mandir}/man1/zabbix_sender*
 
 %files server
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
 %attr(755,root,root) %{_sbindir}/zabbix_server
+%{_mandir}/man8/zabbix_server*
