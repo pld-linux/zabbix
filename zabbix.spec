@@ -9,7 +9,7 @@ Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.8.6
-Release:	0.1
+Release:	0.2
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
@@ -18,6 +18,8 @@ Source1:	%{name}-agent.inetd
 Source2:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
 %{!?with_pgsql:BuildRequires:	mysql-devel}
+BuildRequires:	curl-devel
+BuildRequires:	iksemel-devel
 BuildRequires:	net-snmp-devel
 BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -95,6 +97,12 @@ Summary:	PHP frontend for zabbix
 Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
 Group:		Applications/WWW
 Requires:	php(gd)
+Requires:	php-bcmath
+Requires:	php-ctype
+Requires:	php-mbstring
+Requires:	php-pcre
+Requires:	php-sockets
+Requires:	php-session
 %{!?with_pgsql:Requires:	php-mysql}
 %{?with_pgsql:Requires:	php-pgsql}
 Requires:	webapps
@@ -156,6 +164,8 @@ Ten pakiet zawiera serwer zabbiksa.
 	--enable-agent \
 	--with-net-snmp \
 	--with-ldap \
+	--with-jabber \
+	--with-libcurl
 #	--with-ucd-snmp=DIR \
 
 %{__make}
