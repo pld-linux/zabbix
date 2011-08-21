@@ -9,7 +9,7 @@ Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	1.8.6
-Release:	0.2
+Release:	0.3
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
@@ -179,8 +179,8 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/{sysconfig/rc-inetd,webapps/%{_we
 
 install misc/conf/zabbix_{a*,s*}.conf $RPM_BUILD_ROOT%{_sysconfdir}
 cp -r frontends $RPM_BUILD_ROOT%{_appdir}
-mv -f $RPM_BUILD_ROOT%{_appdir}/frontends/php/include/db.inc.php $RPM_BUILD_ROOT%{_webapps}/%{_webapp}
-ln -s %{_webapps}/%{_webapp}/db.inc.php $RPM_BUILD_ROOT%{_appdir}/frontends/php/include
+#mv -f $RPM_BUILD_ROOT%{_appdir}/frontends/php/include/db.inc.php $RPM_BUILD_ROOT%{_webapps}/%{_webapp}
+#ln -s %{_webapps}/%{_webapp}/db.inc.php $RPM_BUILD_ROOT%{_appdir}/frontends/php/include
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
 install %{SOURCE2} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
 install %{SOURCE2} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
@@ -204,7 +204,7 @@ rm -rf $RPM_BUILD_ROOT
 %groupadd -g 111 zabbix
 %useradd -d / -u 111 -g zabbix -c "Zabbix User" -s /bin/false zabbix
 
-%post
+%post server
 if [ "$1" = 1 ]; then
 	%banner -e %{name} <<-EOF
 	You should create database for Zabbix.
@@ -240,7 +240,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS NEWS README ChangeLog create upgrades
+%doc AUTHORS NEWS README ChangeLog
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 %dir %{_appdir}
 %dir %{_appdir}/frontends
@@ -275,6 +275,7 @@ fi
 
 %files server
 %defattr(644,root,root,755)
+%doc create upgrades
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
 %attr(755,root,root) %{_sbindir}/zabbix_server
 %{_mandir}/man8/zabbix_server*
