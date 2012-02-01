@@ -8,12 +8,12 @@
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	1.8.8
+Version:	1.8.10
 Release:	0.1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	8e38079640cf50c215f36dfd3125a6d3
+# Source0-md5:	7e89f80c1822787c0831f7c0dbefcd7b
 Source1:	%{name}-agent.inetd
 Source2:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
@@ -126,6 +126,17 @@ This package provides a program retrieving data from zabbix agent.
 %description get -l pl.UTF-8
 Ten pakiet zawiera program odpytujÄcy agenta zabbiksa.
 
+%package proxy
+Summary:	Zabbix proxy
+Summary(pl.UTF-8):	Proxy do zabbiksa
+Group:		Networking/Utilities
+
+%description proxy
+This package provides the zabbix proxy.
+
+%description proxy -l pl.UTF-8
+Ten pakiet zawiera proxy zabbix.
+
 %package sender
 Summary:	Zabbix sender
 Summary(pl.UTF-8):	Program zawiadamiający zabbiksa
@@ -162,6 +173,7 @@ Ten pakiet zawiera serwer zabbiksa.
 	%{?with_oracle:--with-oracle} \
 	--enable-server \
 	--enable-agent \
+	--enable-proxy \
 	--with-net-snmp \
 	--with-ldap \
 	--with-jabber \
@@ -267,6 +279,11 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/zabbix_get
 %{_mandir}/man1/zabbix_get*
+
+%files proxy
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/zabbix_proxy
+%{_mandir}/man8/zabbix_proxy*
 
 %files sender
 %defattr(644,root,root,755)
