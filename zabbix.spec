@@ -1,29 +1,47 @@
 # TODO
-# - initscript for zabbix-agent-standalone and zabbix-server
+# - systemd units for zabbix-agentd, zabbix-server and zabbix-java
+# - initscript for zabbix-agentd, zabbix-server and zabbix-java
 #
 # Conditional build:
-%bcond_with	pgsql 	# enable PostgreSQL support (by default use mysql)
-%bcond_with	oracle 	# enable Oracle support (by default use mysql)
+%bcond_with	pgsql 	# enable PostgreSQL support
+%bcond_with	oracle 	# enable Oracle support
+%bcond_with	sqlite3	# enable sqlite3 support
+%bcond_without	mysql	# enable MySQL support
+
+%bcond_without	java	# disable java support
+
+%if %{with pgsql} || %{with oracle} || %{with sqlite3}
+%undefine with_mysql
+%endif
+
+%if %{?with_pgsql:1}%{?with_oracle:1}%{?with_sqlite3:1}%{?with_mysql:1} != 1
+ERROR: exactly one database must be selected
+%endif
 
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	1.8.10
+Version:	3.2.0
 Release:	0.1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	7e89f80c1822787c0831f7c0dbefcd7b
-Source1:	%{name}-agent.inetd
-Source2:	%{name}-apache.conf
+# Source0-md5:	e2491b482868059f251902d5f636eacb
+Source1:	%{name}-apache.conf
 URL:		http://zabbix.sourceforge.net/
-%{!?with_pgsql:BuildRequires:	mysql-devel}
+BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
+%{?with_java:BuildRequires:	jdk}
+BuildRequires:	libxml2-devel
+BuildRequires:	libssh2-devel
+%{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_pgsql:BuildRequires:	postgresql-devel}
+%{?with_sqlite3:BuildRequires:	sqlite3-devel}
+BuildRequires:	unixODBC-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -39,9 +57,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_appdir		%{_datadir}/%{name}
 %define		_webapps	/etc/webapps
 %define		_webapp		%{name}
-
-# FIXME
-%define filterout_ld -Wl,--as-needed
 
 %description
 zabbix is software that monitors numerous parameters of a network and
@@ -65,48 +80,34 @@ oferuje świetne raportowanie i funkcje wizualizacji. Wspiera zarówno
 odpytywanie jak i pułapkowanie. Dostęp do wszystkich raportów i
 statystyk zabbiksa jest możliwy poprzez interfejs oparty o WWW.
 
-%package agent-inetd
-Summary:	inetd agent for zabbix
-Summary(pl.UTF-8):	Wersja inetd agenta zabbiksa
-Group:		Networking/Utilities
-Requires:	%{name} = %{version}-%{release}
-Requires:	inetdaemon
-Obsoletes:	zabbix-agent-standalone
-
-%description agent-inetd
-This package provides inetd version of zabbix agent.
-
-%description agent-inetd -l pl.UTF-8
-Ten pakiet dostarcza agenta zabbiksa dla inetd.
-
-%package agent-standalone
+%package agentd
 Summary:	Standalone agent for zabbix
 Summary(pl.UTF-8):	Wersja wolnostojąca agenta zabbiksa
 Group:		Networking/Utilities
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	zabbix-agent-inetd
+Obsoletes:	zabbix-agent-standalone
 
-%description agent-standalone
-This package provides standalone (recommended) version of zabbix agent.
+%description agentd
+This package provides the zabbix agent.
 
-%description agent-standalone -l pl.UTF-8
-Ten pakiet dostarcza wolnostojącej (zalecanej) wersji agenta zabbiksa.
+%description agentd -l pl.UTF-8
+Ten pakiet dostarcza agenta zabbiksa.
 
 %package frontend-php
 Summary:	PHP frontend for zabbix
 Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
 Group:		Applications/WWW
 Requires:	php(gd)
-Requires:	php-bcmath
-Requires:	php-ctype
-Requires:	php-mbstring
-Requires:	php-pcre
-Requires:	php-sockets
-Requires:	php-session
-%{!?with_pgsql:Requires:	php-mysql}
-%{?with_pgsql:Requires:	php-pgsql}
+Requires:	php(bcmath)
+Requires:	php(ctype)
+Requires:	php(mbstring)
+Requires:	php(pcre)
+Requires:	php(sockets)
+Requires:	php(session)
+%{?with_mysql:Requires:	php(mysql)}
+%{?with_pgsql:Requires:	php(pgsql)}
 Requires:	webapps
-Requires:	webserver = apache
 Requires:	webserver(php)
 
 %description frontend-php
@@ -163,39 +164,70 @@ This package provides the zabbix server.
 %description server -l pl.UTF-8
 Ten pakiet zawiera serwer zabbiksa.
 
+%package java
+Summary:	Zabbix Java Gateway
+Group:		Networking/Utilities
+Requires:	%{name} = %{version}-%{release}
+
+%description java
+This package provides the Zabbix Java Gateway.
+
 %prep
 %setup -q
 
 %build
 %configure \
-	%{!?with_pgsql:--with-mysql} \
+	%{?with_mysql:--with-mysql} \
 	%{?with_pgsql:--with-pgsql} \
 	%{?with_oracle:--with-oracle} \
+	%{?with_sqlite3:--with-sqlite3} \
 	--enable-server \
 	--enable-agent \
 	--enable-proxy \
-	--with-net-snmp \
-	--with-ldap \
+	--enable-ipv6 \
+	%{__enable_disable java} \
 	--with-jabber \
-	--with-libcurl
-#	--with-ucd-snmp=DIR \
+	--with-ldap \
+	--with-libcurl \
+	--with-libxml2 \
+	--with-net-snmp \
+	--with-openipmi \
+	--with-openssl \
+	--with-ssh2 \
+	--with-unixodbc
 
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/{sysconfig/rc-inetd,webapps/%{_webapp}},%{_appdir}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/webapps/%{_webapp},%{_appdir}}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	ZJG_DEST=$RPM_BUILD_ROOT%{_datadir}/zabbix_java
 
-install misc/conf/zabbix_{a*,s*}.conf $RPM_BUILD_ROOT%{_sysconfdir}
 cp -r frontends $RPM_BUILD_ROOT%{_appdir}
 #mv -f $RPM_BUILD_ROOT%{_appdir}/frontends/php/include/db.inc.php $RPM_BUILD_ROOT%{_webapps}/%{_webapp}
 #ln -s %{_webapps}/%{_webapp}/db.inc.php $RPM_BUILD_ROOT%{_appdir}/frontends/php/include
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/zabbix-agent
-install %{SOURCE2} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
-install %{SOURCE2} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+install %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+
+%if %{with java}
+mv $RPM_BUILD_ROOT%{_datadir}/zabbix_java/settings.sh $RPM_BUILD_ROOT%{_sysconfdir}/zabbix_java.conf
+ln -s %{_sysconfdir}/zabbix_java.conf $RPM_BUILD_ROOT%{_datadir}/zabbix_java/settings.sh
+
+cat >$RPM_BUILD_ROOT%{_sbindir}/zabbix_java-start <<'EOF'
+#!/bin/sh
+
+exec %{_datadir}/zabbix_java/startup.sh "$@"
+EOF
+
+cat >$RPM_BUILD_ROOT%{_sbindir}/zabbix_java-stop <<'EOF'
+#!/bin/sh
+
+exec %{_datadir}/zabbix_java/shutdown.sh "$@"
+EOF
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -218,21 +250,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %post server
 if [ "$1" = 1 ]; then
-	%banner -e %{name} <<-EOF
+	%banner -e %{name}-server <<-EOF
 	You should create database for Zabbix.
-	Running these should be fine in most cases:
 %if %{with pgsql}
+	Running these should be fine in most cases:
 	psql -c 'create database zabbix'
-	zcat %{_docdir}/%{name}-%{version}/create/postgresql/schema.sql.gz | psql zabbix
-	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | psql zabbix
-	zcat %{_docdir}/%{name}-%{version}/create/data/images_pgsql.sql.gz | psql zabbix
+	zcat %{_docdir}/%{name}-server-%{version}/postgresql/schema.sql.gz | psql zabbix
+	zcat %{_docdir}/%{name}-server-%{version}/postgresql/data.sql.gz | psql zabbix
+	zcat %{_docdir}/%{name}-server-%{version}/postgresql/images.sql.gz | psql zabbix
 %else
+%if %{with mysql}
+	Running these should be fine in most cases:
 	mysqladmin create zabbix
-	zcat %{_docdir}/%{name}-%{version}/create/mysql/schema.sql.gz | mysql zabbix
-	zcat %{_docdir}/%{name}-%{version}/create/data/data.sql.gz | mysql zabbix
-	zcat %{_docdir}/%{name}-%{version}/create/data/images.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-server-%{version}/mysql/schema.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-server-%{version}/mysql/images.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-server-%{version}/mysql/data.sql.gz | mysql zabbix
+%else
+	Database template is available in %{_docdir}/%{name}-%{version}
 %endif
-	%{?TODO:You also need zabbix-agent. install zabbix-agent-standalone %or zabbix-agent-inetd.}
+%endif
+	%{?TODO:You also need zabbix-agent. install zabbix-agentd.}
 EOF
 fi
 
@@ -242,28 +279,14 @@ if [ "$1" = "0" ]; then
 	%groupremove zabbix
 fi
 
-%post agent-inetd
-%service -q rc-inetd reload
-
-%postun agent-inetd
-if [ "$1" = 0 ]; then
-	%service -q rc-inetd reload
-fi
-
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS NEWS README ChangeLog
+%doc AUTHORS ChangeLog README
 %attr(750,root,zabbix) %dir %{_sysconfdir}
 %dir %{_appdir}
 %dir %{_appdir}/frontends
 
-%files agent-inetd
-%defattr(644,root,root,755)
-%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/zabbix-agent
-%attr(755,root,root) %{_sbindir}/zabbix_agent
-
-%files agent-standalone
+%files agentd
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
 %attr(755,root,root) %{_sbindir}/zabbix_agentd
@@ -282,6 +305,7 @@ fi
 
 %files proxy
 %defattr(644,root,root,755)
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_proxy.conf
 %attr(755,root,root) %{_sbindir}/zabbix_proxy
 %{_mandir}/man8/zabbix_proxy*
 
@@ -292,7 +316,33 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc create upgrades
+%doc upgrades/dbpatches
+%if %{with mysql}
+%doc database/mysql
+%endif
+%if %{with postgresql}
+%doc database/postgresql
+%endif
+%if %{with oracle}
+%doc database/oracle
+%endif
+%if %{with sqlite3}
+%doc database/sqlite3
+%endif
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
 %attr(755,root,root) %{_sbindir}/zabbix_server
 %{_mandir}/man8/zabbix_server*
+
+%if %{with java}
+%files java
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/zabbix_java-start
+%attr(755,root,root) %{_sbindir}/zabbix_java-stop
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_java.conf
+%dir %{_datadir}/zabbix_java
+%{_datadir}/zabbix_java/bin
+%{_datadir}/zabbix_java/lib
+%{_datadir}/zabbix_java/settings.sh
+%attr(755,root,root) %{_datadir}/zabbix_java/shutdown.sh
+%attr(755,root,root) %{_datadir}/zabbix_java/startup.sh
+%endif
