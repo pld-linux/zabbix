@@ -18,6 +18,8 @@
 ERROR: exactly one database must be selected
 %endif
 
+%define         php_min_version 5.4.0
+
 Summary:	zabbix - network monitoring software
 Summary(pl.UTF-8):	zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
@@ -98,13 +100,18 @@ Ten pakiet dostarcza agenta zabbiksa.
 Summary:	PHP frontend for zabbix
 Summary(pl.UTF-8):	Interfejs PHP dla zabbiksa
 Group:		Applications/WWW
-Requires:	php(gd)
 Requires:	php(bcmath)
+Requires:	php(core) >= %{php_min_version}
 Requires:	php(ctype)
+Requires:	php(gd)
+Requires:	php(gettext)
 Requires:	php(mbstring)
 Requires:	php(pcre)
-Requires:	php(sockets)
 Requires:	php(session)
+Requires:	php(sockets)
+Requires:	php(xml)
+Requires:	php(xmlreader)
+Requires:	php(xmlwriter)
 %{?with_mysql:Requires:	php(mysql)}
 %{?with_pgsql:Requires:	php(pgsql)}
 Requires:	webapps
