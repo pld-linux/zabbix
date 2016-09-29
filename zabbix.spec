@@ -26,7 +26,7 @@ Version:	3.2.0
 Release:	0.2
 License:	GPL v2+
 Group:		Networking/Utilities
-Source0:	http://dl.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
+Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
 # Source0-md5:	e2491b482868059f251902d5f636eacb
 Source1:	%{name}-apache.conf
 Source2:	zabbix_server.service
