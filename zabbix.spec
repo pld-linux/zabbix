@@ -6,7 +6,6 @@
 %bcond_with	oracle 	# enable Oracle support
 %bcond_with	sqlite3	# enable sqlite3 support
 %bcond_without	mysql	# enable MySQL support
-
 %bcond_without	java	# disable java support
 
 %if %{with pgsql} || %{with oracle} || %{with sqlite3}
@@ -17,8 +16,7 @@
 ERROR: exactly one database must be selected
 %endif
 
-%define         php_min_version 5.4.0
-
+%define		php_min_version 5.4.0
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
@@ -29,30 +27,30 @@ Group:		Networking/Utilities
 Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
 # Source0-md5:	e2491b482868059f251902d5f636eacb
 Source1:	%{name}-apache.conf
-Source2:	zabbix_server.service
-Source3:	zabbix_agentd.service
-Source4:	zabbix_proxy.service
-Source5:	zabbix_java.service
-Source6:	zabbix.tmpfiles
+Source2:	%{name}_server.service
+Source3:	%{name}_agentd.service
+Source4:	%{name}_proxy.service
+Source5:	%{name}_java.service
+Source6:	%{name}.tmpfiles
 Patch0:		config.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
 %{?with_java:BuildRequires:	jdk}
-BuildRequires:	libxml2-devel
 BuildRequires:	libssh2-devel
+BuildRequires:	libxml2-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_pgsql:BuildRequires:	postgresql-devel}
+BuildRequires:	rpmbuild(macros) >= 1.671
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	unixODBC-devel
-BuildRequires:	rpmbuild(macros) >= 1.671
-Requires:	zabbix-server
-Requires:	zabbix-agentd
-Requires:	zabbix-frontend-php
+Requires:	%{name}-agentd = %{version}-%{release}
+Requires:	%{name}-frontend-php = %{version}-%{release}
+Requires:	%{name}-server = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -62,11 +60,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 Zabbix is software that monitors numerous parameters of a network and
-the servers on that network. It is a useful tool for monitoring
-the health and integrity of servers. Zabbix uses a flexible
-notification mechanism that allows users to configure email based
-alerts for virtually any event. All monitored parameters are stored in
-a database. Zabbix offers excellent reporting and data visualisation
+the servers on that network. It is a useful tool for monitoring the
+health and integrity of servers. Zabbix uses a flexible notification
+mechanism that allows users to configure email based alerts for
+virtually any event. All monitored parameters are stored in a
+database. Zabbix offers excellent reporting and data visualisation
 features based on the stored data. Zabbix supports both polling and
 trapping. All Zabbix reports and statistics, as well as configuration
 parameters, are accessed through a web-based front end.
@@ -105,8 +103,8 @@ Wspólne pliki dla oprogramowania monitorującego Zabbix.
 Summary:	Zabbix Agent
 Summary(pl.UTF-8):	Agenta Zabbiksa
 Group:		Networking/Utilities
-Requires:	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	systemd-units >= 38
 Obsoletes:	zabbix-agent-inetd
 Obsoletes:	zabbix-agent-standalone
 
@@ -126,14 +124,14 @@ Requires:	php(ctype)
 Requires:	php(gd)
 Requires:	php(gettext)
 Requires:	php(mbstring)
+%{?with_mysql:Requires: php(mysql)}
 Requires:	php(pcre)
+%{?with_pgsql:Requires: php(pgsql)}
 Requires:	php(session)
 Requires:	php(sockets)
 Requires:	php(xml)
 Requires:	php(xmlreader)
 Requires:	php(xmlwriter)
-%{?with_mysql:Requires:	php(mysql)}
-%{?with_pgsql:Requires:	php(pgsql)}
 Requires:	webapps
 Requires:	webserver(php)
 
@@ -158,8 +156,8 @@ Ten pakiet zawiera program odpytujÄcy agenta Zabbiksa.
 Summary:	Zabbix proxy
 Summary(pl.UTF-8):	Proxy do Zabbiksa
 Group:		Networking/Utilities
-Requires:	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	systemd-units >= 38
 
 %description proxy
 This package provides the Zabbix proxy.
@@ -182,11 +180,11 @@ Ten pakiet zawiera program zawiadamiający Zabbiksa.
 Summary:	Zabbix server
 Summary(pl.UTF-8):	Serwer Zabbiksa
 Group:		Networking/Utilities
-Requires:	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
-Obsoletes:	%{name}-suckerd
-Obsoletes:	%{name}-trapper-inetd
-Obsoletes:	%{name}-trapper-standalone
+Requires:	systemd-units >= 38
+Obsoletes:	zabbix-suckerd
+Obsoletes:	zabbix-trapper-inetd
+Obsoletes:	zabbix-trapper-standalone
 
 %description server
 This package provides the Zabbix server.
@@ -197,8 +195,8 @@ Ten pakiet zawiera serwer Zabbiksa.
 %package java
 Summary:	Zabbix Java Gateway
 Group:		Networking/Utilities
-Requires:	systemd-units >= 38
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	systemd-units >= 38
 
 %description java
 This package provides the Zabbix Java Gateway.
@@ -242,15 +240,15 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/webapps/%{_webapp},%{_appdir}} \
 
 cp -r frontends $RPM_BUILD_ROOT%{_appdir}
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
-install %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 
 install	%{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_server.service
 install	%{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agentd.service
 install	%{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_proxy.service
 install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service
 
-install %{SOURCE6} $RPM_BUILD_ROOT%{tmpfilesdir}/zabbix.conf
+cp -p %{SOURCE6} $RPM_BUILD_ROOT%{tmpfilesdir}/zabbix.conf
 
 mv $RPM_BUILD_ROOT%{_appdir}/frontends/php/conf $RPM_BUILD_ROOT%{_sysconfdir}/frontend
 ln -s %{_sysconfdir}/frontend $RPM_BUILD_ROOT%{_appdir}/frontends/php/conf
