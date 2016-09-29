@@ -1,0 +1,15 @@
+[Unit]
+Description=Zabbix Java Gateway
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/zabbix_java-start
+ExecStop=/usr/sbin/zabbix_java-stop
+Restart=on-failure
+PIDFile=/run/zabbix/zabbix_java.pid
+User=zabbix
+Group=zabbix
+SuccessExitStatus=0 143 SIGTERM
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Zabbix proxy
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/zabbix_proxy
+ExecReload=/usr/sbin/zabbix_proxy -R config_cache_reload
+Restart=on-failure
+PIDFile=/run/zabbix/zabbix_proxy.pid
+
+[Install]
+WantedBy=multi-user.target
