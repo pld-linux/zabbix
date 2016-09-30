@@ -123,6 +123,7 @@ Requires:	php(core) >= %{php_min_version}
 Requires:	php(ctype)
 Requires:	php(gd)
 Requires:	php(gettext)
+Requires:	php(json)
 Requires:	php(mbstring)
 %{?with_mysql:Requires: php(mysql)}
 Requires:	php(pcre)
