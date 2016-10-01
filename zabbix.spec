@@ -553,7 +553,9 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 
 %files agentd
 %defattr(644,root,root,755)
+%doc conf/zabbix_agentd/*.conf
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
+%dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_agentd.conf.d
 %attr(755,root,root) %{_sbindir}/zabbix_agentd
 %{_mandir}/man8/zabbix_agentd*
 %{systemdunitdir}/zabbix_agentd.service
@@ -576,6 +578,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %files proxy
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_proxy.conf
+%dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_proxy.conf.d
 %ghost %attr(755,root,root) %{_sbindir}/zabbix_proxy
 %{_mandir}/man8/zabbix_proxy*
 %{systemdunitdir}/zabbix_proxy.service
@@ -607,6 +610,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %defattr(644,root,root,755)
 %doc upgrades/dbpatches
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
+%dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_server.conf.d
 %ghost %attr(755,root,root) %{_sbindir}/zabbix_server
 %{_mandir}/man8/zabbix_server*
 %{systemdunitdir}/zabbix_server.service

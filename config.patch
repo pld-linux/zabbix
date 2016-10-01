@@ -1,6 +1,6 @@
 diff -dur zabbix-3.2.0.orig/conf/zabbix_agentd.conf zabbix-3.2.0/conf/zabbix_agentd.conf
 --- zabbix-3.2.0.orig/conf/zabbix_agentd.conf	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/conf/zabbix_agentd.conf	2016-09-29 14:05:11.000000000 +0200
++++ zabbix-3.2.0/conf/zabbix_agentd.conf	2016-10-01 18:42:28.000000000 +0200
 @@ -9,6 +9,7 @@
  # Mandatory: no
  # Default:
@@ -18,9 +18,18 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_agentd.conf zabbix-3.2.0/conf/zabbix_age
  
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
+@@ -260,7 +261,7 @@
+ 
+ # Include=/usr/local/etc/zabbix_agentd.userparams.conf
+ # Include=/usr/local/etc/zabbix_agentd.conf.d/
+-# Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
++Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf
+ 
+ ####### USER-DEFINED MONITORED PARAMETERS #######
+ 
 diff -dur zabbix-3.2.0.orig/conf/zabbix_proxy.conf zabbix-3.2.0/conf/zabbix_proxy.conf
 --- zabbix-3.2.0.orig/conf/zabbix_proxy.conf	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/conf/zabbix_proxy.conf	2016-09-29 14:05:11.000000000 +0200
++++ zabbix-3.2.0/conf/zabbix_proxy.conf	2016-10-01 18:42:44.000000000 +0200
 @@ -82,7 +82,7 @@
  # Default:
  # LogFile=
@@ -39,9 +48,18 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_proxy.conf zabbix-3.2.0/conf/zabbix_prox
  
  ### Option: DBHost
  #	Database host name.
+@@ -543,7 +543,7 @@
+ 
+ # Include=/usr/local/etc/zabbix_proxy.general.conf
+ # Include=/usr/local/etc/zabbix_proxy.conf.d/
+-# Include=/usr/local/etc/zabbix_proxy.conf.d/*.conf
++Include=/etc/zabbix/zabbix_proxy.conf.d/*.conf
+ 
+ ### Option: SSLCertLocation
+ #	Location of SSL client certificates.
 diff -dur zabbix-3.2.0.orig/conf/zabbix_server.conf zabbix-3.2.0/conf/zabbix_server.conf
 --- zabbix-3.2.0.orig/conf/zabbix_server.conf	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/conf/zabbix_server.conf	2016-09-29 14:05:11.000000000 +0200
++++ zabbix-3.2.0/conf/zabbix_server.conf	2016-10-01 18:43:07.000000000 +0200
 @@ -35,7 +35,7 @@
  # Default:
  # LogFile=
@@ -60,9 +78,30 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_server.conf zabbix-3.2.0/conf/zabbix_ser
  
  ### Option: DBHost
  #	Database host name.
+@@ -552,7 +552,7 @@
+ 
+ # Include=/usr/local/etc/zabbix_server.general.conf
+ # Include=/usr/local/etc/zabbix_server.conf.d/
+-# Include=/usr/local/etc/zabbix_server.conf.d/*.conf
++Include=/etc/zabbix/zabbix_server.conf.d/*.conf
+ 
+ ### Option: SSLCertLocation
+ #	Location of SSL client certificates.
+diff -dur zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php
+--- zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php	2016-09-13 14:21:05.000000000 +0200
++++ zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php	2016-10-01 18:42:06.000000000 +0200
+@@ -386,7 +386,7 @@
+ 				new CTag('p', true, _('Alternatively, you can install it manually:')),
+ 				new CTag('ol', true, [
+ 					new CTag('li', true, new CLink(_('Download the configuration file'), 'setup.php?save_config=1')),
+-					new CTag('li', true, _s('Save it as "%1$s"', $config_file_name))
++					new CTag('li', true, _s('Save it as "%1$s"', '/etc/zabbix/frontend/zabbix.conf.php'))
+ 				]),
+ 			];
+ 		}
 diff -dur zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml zabbix-3.2.0/src/zabbix_java/lib/logback.xml
 --- zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/src/zabbix_java/lib/logback.xml	2016-09-29 14:07:41.000000000 +0200
++++ zabbix-3.2.0/src/zabbix_java/lib/logback.xml	2016-10-01 18:42:06.000000000 +0200
 @@ -2,10 +2,10 @@
  
  	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -78,7 +117,7 @@ diff -dur zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml zabbix-3.2.0/src/zab
  		</rollingPolicy>
 diff -dur zabbix-3.2.0.orig/src/zabbix_java/settings.sh zabbix-3.2.0/src/zabbix_java/settings.sh
 --- zabbix-3.2.0.orig/src/zabbix_java/settings.sh	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/src/zabbix_java/settings.sh	2016-09-29 14:05:32.000000000 +0200
++++ zabbix-3.2.0/src/zabbix_java/settings.sh	2016-10-01 18:42:06.000000000 +0200
 @@ -24,7 +24,7 @@
  # Default:
  # PID_FILE=
@@ -88,16 +127,3 @@ diff -dur zabbix-3.2.0.orig/src/zabbix_java/settings.sh zabbix-3.2.0/src/zabbix_
  
  ### Option: zabbix.startPollers
  #	Number of worker threads to start.
-diff -dur zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php
---- zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php	2016-09-13 14:21:05.000000000 +0200
-+++ zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php	2016-09-29 12:43:27.000000000 +0200
-@@ -386,7 +386,7 @@
- 				new CTag('p', true, _('Alternatively, you can install it manually:')),
- 				new CTag('ol', true, [
- 					new CTag('li', true, new CLink(_('Download the configuration file'), 'setup.php?save_config=1')),
--					new CTag('li', true, _s('Save it as "%1$s"', $config_file_name))
-+					new CTag('li', true, _s('Save it as "%1$s"', '/etc/zabbix/frontend/zabbix.conf.php'))
- 				]),
- 			];
- 		}
-Only in zabbix-3.2.0/frontends/php/include/classes/setup: CSetupWizard.php~
