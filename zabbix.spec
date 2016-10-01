@@ -233,7 +233,7 @@ This package provides the Zabbix Java Gateway.
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/webapps/%{_webapp},%{_appdir}} \
-	$RPM_BUILD_ROOT{/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{tmpfilesdir}}
+	$RPM_BUILD_ROOT{/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -249,7 +249,7 @@ install	%{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agentd.service
 install	%{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_proxy.service
 install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service
 
-cp -p %{SOURCE6} $RPM_BUILD_ROOT%{tmpfilesdir}/zabbix.conf
+cp -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/zabbix.conf
 
 mv $RPM_BUILD_ROOT%{_appdir}/frontends/php/conf $RPM_BUILD_ROOT%{_sysconfdir}/frontend
 ln -s %{_sysconfdir}/frontend $RPM_BUILD_ROOT%{_appdir}/frontends/php/conf
@@ -373,6 +373,7 @@ fi
 %dir %{_appdir}/frontends
 %dir %attr(770,root,zabbix) /run/zabbix
 %dir %attr(775,root,zabbix) /var/log/zabbix
+%{systemdtmpfilesdir}/zabbix.conf
 
 %files agentd
 %defattr(644,root,root,755)
