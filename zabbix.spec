@@ -2,26 +2,19 @@
 # - initscript for zabbix-agentd, zabbix-server, zabbix-proxy and zabbix-java
 #
 # Conditional build:
-%bcond_with	pgsql 	# enable PostgreSQL support
-%bcond_with	oracle 	# enable Oracle support
-%bcond_with	sqlite3	# enable sqlite3 support
+%bcond_without	pgsql 	# enable PostgreSQL support
+%bcond_without	sqlite3	# enable sqlite3 support
 %bcond_without	mysql	# enable MySQL support
 %bcond_without	java	# disable java support
 
-%if %{with pgsql} || %{with oracle} || %{with sqlite3}
-%undefine with_mysql
-%endif
-
-%if %{?with_pgsql:1}%{?with_oracle:1}%{?with_sqlite3:1}%{?with_mysql:1} != 1
-ERROR: exactly one database must be selected
-%endif
+%define databases %{?with_pgsql:postgresql} %{?with_mysql:mysql} %{?with_sqlite3:sqlite3}
 
 %define		php_min_version 5.4.0
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	3.2.0
-Release:	0.2
+Release:	0.3
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
@@ -33,6 +26,7 @@ Source4:	%{name}_proxy.service
 Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
 Patch0:		config.patch
+Patch1:		sqlite3_dbname.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
@@ -125,9 +119,7 @@ Requires:	php(gd)
 Requires:	php(gettext)
 Requires:	php(json)
 Requires:	php(mbstring)
-%{?with_mysql:Requires: php(mysql)}
 Requires:	php(pcre)
-%{?with_pgsql:Requires: php(pgsql)}
 Requires:	php(session)
 Requires:	php(sockets)
 Requires:	php(xml)
@@ -135,6 +127,9 @@ Requires:	php(xmlreader)
 Requires:	php(xmlwriter)
 Requires:	webapps
 Requires:	webserver(php)
+Suggests:	php(mysql)
+Suggests:	php(pgsql)
+Suggests:	php(sqlite3)
 
 %description frontend-php
 This package provides web based (PHP) frontend for Zabbix.
@@ -158,6 +153,7 @@ Summary:	Zabbix proxy
 Summary(pl.UTF-8):	Proxy do Zabbiksa
 Group:		Networking/Utilities
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	zabbix-proxy(db) = %{version}-%{release}
 Requires:	systemd-units >= 38
 
 %description proxy
@@ -165,6 +161,48 @@ This package provides the Zabbix proxy.
 
 %description proxy -l pl.UTF-8
 Ten pakiet zawiera proxy Zabbix.
+
+%package proxy-mysql
+Summary:	MySQL support for Zabbix proxy
+Summary(pl.UTF-8):	Obsługa MySQL dla proxy do Zabbiksa
+Group:		Networking/Utilities
+Provides:	%{name}-proxy(db) = %{version}-%{release}
+Obsoletes:	%{name}-proxy-postgresql
+Obsoletes:	%{name}-proxy-sqlite3
+
+%description proxy-mysql
+This package provides the Zabbix proxy binary with MySQL support.
+
+%description proxy-mysql -l pl.UTF-8
+Ten pakiet zawiera proxy Zabbix z obsługą MySQL.
+
+%package proxy-postgresql
+Summary:	PostgreSQL support for Zabbix proxy
+Summary(pl.UTF-8):	Obsługa PostgreSQL dla proxy do Zabbiksa
+Group:		Networking/Utilities
+Provides:	%{name}-proxy(db) = %{version}-%{release}
+Obsoletes:	%{name}-proxy-mysql
+Obsoletes:	%{name}-proxy-sqlite3
+
+%description proxy-postgresql
+This package provides the Zabbix proxy binary with PostgreSQL support.
+
+%description proxy-postgresql -l pl.UTF-8
+Ten pakiet zawiera proxy Zabbix z obsługą PostgreSQL.
+
+%package proxy-sqlite3
+Summary:	SQLite 3 support for Zabbix proxy
+Summary(pl.UTF-8):	Obsługa SQLite 3 dla proxy do Zabbiksa
+Group:		Networking/Utilities
+Provides:	%{name}-proxy(db) = %{version}-%{release}
+Obsoletes:	%{name}-proxy-mysql
+Obsoletes:	%{name}-proxy-postgresql
+
+%description proxy-sqlite3
+This package provides the Zabbix proxy binary with SQLite 3 support.
+
+%description proxy-sqlite3 -l pl.UTF-8
+Ten pakiet zawiera proxy Zabbix z obsługą SQLite 3.
 
 %package sender
 Summary:	Zabbix sender
@@ -182,6 +220,7 @@ Summary:	Zabbix server
 Summary(pl.UTF-8):	Serwer Zabbiksa
 Group:		Networking/Utilities
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	%{name}-server(db) = %{version}-%{release}
 Requires:	systemd-units >= 38
 Obsoletes:	zabbix-suckerd
 Obsoletes:	zabbix-trapper-inetd
@@ -192,6 +231,49 @@ This package provides the Zabbix server.
 
 %description server -l pl.UTF-8
 Ten pakiet zawiera serwer Zabbiksa.
+
+%package server-mysql
+Summary:	MySQL support for Zabbix server
+Summary(pl.UTF-8):	Obsługa MySQL sla serwera Zabbiksa
+Group:		Networking/Utilities
+Provides:	%{name}-server(db) = %{version}-%{release}
+Obsoletes:	%{name}-server-postgresql
+Obsoletes:	%{name}-server-sqlite3
+
+%description server-mysql
+This package provides the Zabbix server binary for use with MySQL database.
+
+%description server-mysql -l pl.UTF-8
+Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych MySQL.
+
+%package server-postgresql
+Summary:	PostgreSQL support for Zabbix server
+Summary(pl.UTF-8):	Obsługa PostgreSQL sla serwera Zabbiksa
+Group:		Networking/Utilities
+Provides:	%{name}-server(db) = %{version}-%{release}
+Obsoletes:	%{name}-server-mysql
+Obsoletes:	%{name}-server-sqlite3
+
+%description server-postgresql
+This package provides the Zabbix server binary for use with PostgreSQL database.
+
+%description server-postgresql -l pl.UTF-8
+Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych PostgreSQL.
+
+%package server-sqlite3
+Summary:	SQLite 3 support for Zabbix server
+Summary(pl.UTF-8):	Obsługa SQLite 3 sla serwera Zabbiksa
+Group:		Networking/Utilities
+Requires(post):	/bin/zcat
+Provides:	%{name}-server(db) = %{version}-%{release}
+Obsoletes:	%{name}-server-mysql
+Obsoletes:	%{name}-server-postgresql
+
+%description server-sqlite3
+This package provides the Zabbix server binary for use with SQLite 3 database.
+
+%description server-sqlite3 -l pl.UTF-8
+Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych SQLite 3.
 
 %package java
 Summary:	Zabbix Java Gateway
@@ -206,16 +288,13 @@ This package provides the Zabbix Java Gateway.
 %setup -q
 
 %patch0 -p1
+%patch1 -p1
 
 %build
-%configure \
-	%{?with_mysql:--with-mysql} \
-	%{?with_pgsql:--with-postgresql} \
-	%{?with_oracle:--with-oracle} \
-	%{?with_sqlite3:--with-sqlite3} \
-	--enable-server \
+
+configure() {
+	%configure \
 	--enable-agent \
-	--enable-proxy \
 	--enable-ipv6 \
 	%{__enable_disable java} \
 	--with-jabber \
@@ -226,9 +305,53 @@ This package provides the Zabbix Java Gateway.
 	--with-openipmi \
 	--with-openssl \
 	--with-ssh2 \
-	--with-unixodbc
+	--with-unixodbc \
+	"$@"
+}
+
+configure \
+	--disable-server \
+	--disable-proxy 
 
 %{__make}
+
+# keep timestamps to prevent unneccessary rebuilds
+cp -a include/config.h include/config.h.old
+cp -a include/stamp-h1 include/stamp-h1.old
+
+for database in %{databases} ; do
+	configure \
+		--with-$database \
+		--enable-server \
+		--enable-proxy
+
+	# restore timestamps
+	touch --reference=include/config.h.old include/config.h
+	touch --reference=include/stamp-h1.old include/stamp-h1
+
+	# clean what needs rebuilding
+	for dir in src/libs/zbxdb* src/libs/zbxserver ; do
+		%{__make} -C $dir clean
+	done
+
+	touch include/zbxdb.h
+
+	%{__make}
+
+	%{__make} install \
+		-C src/zabbix_server \
+		DESTDIR=$PWD/install-${database}
+	%{__make} install \
+		-C src/zabbix_proxy \
+		DESTDIR=$PWD/install-${database}
+
+	# prepare dirs for %%doc
+	for dir in upgrades/dbpatches/* ; do
+		[ -d $dir/${database} ] || continue
+		mkdir -p install-${database}/upgrade/$(basename $dir)
+		cp -a $dir/${databases}/* install-${database}/upgrade/$(basename $dir)
+	done
+done
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -238,6 +361,23 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/webapps/%{_webapp},%{_appdir}} \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	ZJG_DEST=$RPM_BUILD_ROOT%{_datadir}/zabbix_java
+
+for database in %{databases} ; do
+	cp -p install-$database/%{_sbindir}/zabbix_server \
+		$RPM_BUILD_ROOT%{_sbindir}/zabbix_server-$database
+	cp -p install-$database/%{_sbindir}/zabbix_proxy \
+		$RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy-$database
+done
+
+if [ -n "$database" ] ; then
+	ln -sf %{_sbindir}/zabbix_server-$database $RPM_BUILD_ROOT%{_sbindir}/zabbix_server
+	ln -sf %{_sbindir}/zabbix_proxy-$database $RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy
+fi
+
+%if %{with sqlite3}
+install -d $RPM_BUILD_ROOT/var/lib/zabbix
+touch $RPM_BUILD_ROOT/var/lib/zabbix/zabbix.db
+%endif
 
 cp -r frontends $RPM_BUILD_ROOT%{_appdir}
 
@@ -301,36 +441,63 @@ if [ "$1" = "0" ]; then
 	%groupremove zabbix
 fi
 
-%post server
+%post server-mysql
 if [ "$1" = 1 ]; then
 	%banner -e %{name}-server <<-EOF
 	You should create database for Zabbix.
-%if %{with pgsql}
-	Running these should be fine in most cases:
-	psql -c 'create database zabbix'
-	zcat %{_docdir}/%{name}-server-%{version}/postgresql/schema.sql.gz | psql zabbix
-	zcat %{_docdir}/%{name}-server-%{version}/postgresql/images.sql.gz | psql zabbix
-	zcat %{_docdir}/%{name}-server-%{version}/postgresql/data.sql.gz | psql zabbix
-%else
-%if %{with mysql}
+
 	Running these should be fine in most cases:
 	mysqladmin create zabbix
-	zcat %{_docdir}/%{name}-server-%{version}/mysql/schema.sql.gz | mysql zabbix
-	zcat %{_docdir}/%{name}-server-%{version}/mysql/images.sql.gz | mysql zabbix
-	zcat %{_docdir}/%{name}-server-%{version}/mysql/data.sql.gz | mysql zabbix
-%else
-	Database template is available in %{_docdir}/%{name}-%{version}
-%endif
-%endif
-	%{?TODO:You also need zabbix-agent. install zabbix-agentd.}
+	zcat %{_docdir}/%{name}-server-mysql-%{version}/schema.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-server-mysql-%{version}/images.sql.gz | mysql zabbix
+	zcat %{_docdir}/%{name}-server-mysql-%{version}/data.sql.gz | mysql zabbix
 EOF
 fi
+ln -sf %{_sbindir}/zabbix_server-mysql %{_sbindir}/zabbix_server || :
+
+%post server-postgresql
+if [ "$1" = 1 ]; then
+	%banner -e %{name}-server <<-EOF
+	You should create database for Zabbix.
+
+	Running these should be fine in most cases:
+
+	createuser zabbix
+	createdb -O zabbix zabbix
+	zcat %{_docdir}/%{name}-server-postgresql-%{version}/schema.sql.gz | psql -u zabbix zabbix
+	zcat %{_docdir}/%{name}-server-postgresql-%{version}/images.sql.gz | psql -u zabbix zabbix
+	zcat %{_docdir}/%{name}-server-postgresql-%{version}/data.sql.gz | psql -u zabbix zabbix
+EOF
+fi
+ln -sf %{_sbindir}/zabbix_server-postgresql %{_sbindir}/zabbix_server || :
+
+%post server-sqlite3
+if [ "$1" = 1 ]; then
+	if [ ! -f /var/lib/zabbix/zabbix.db ] ; then
+		%banner -e %{name}-server <<-EOF
+		Creating sqlite3 database for Zabbix in /var/lib/zabbix/zabbix.db
+EOF
+		zcat %{_docdir}/%{name}-server-sqlite3-%{version}/schema.sql.gz | sqlite3 /var/lib/zabbix/zabbix.db && \
+		zcat %{_docdir}/%{name}-server-sqlite3-%{version}/images.sql.gz | sqlite3 /var/lib/zabbix/zabbix.db && \
+		zcat %{_docdir}/%{name}-server-sqlite3-%{version}/data.sql.gz | sqlite3 /var/lib/zabbix/zabbix.db && \
+		chown zabbix:zabbix /var/lib/zabbix/zabbix.db && \
+		chmod 644 /var/lib/zabbix/zabbix.db || :
+	fi
+fi
+ln -sf %{_sbindir}/zabbix_server-sqlite3 %{_sbindir}/zabbix_server || :
+
+%post server
 %systemd_post zabbix_server.service
 
 %preun server
 %systemd_preun zabbix_server.service
 
 %postun server
+if [ "$1" = "0" ]; then
+	if [ -L %{_sbindir}/zabbix_server ] ; then
+		rm -f %{_sbindir}/zabbix_server || :
+	fi
+fi
 %systemd_reload
 
 %post agentd
@@ -341,6 +508,15 @@ fi
 
 %postun agentd
 %systemd_reload
+
+%post proxy-mysql
+ln -sf %{_sbindir}/zabbix_proxy-mysql %{_sbindir}/zabbix_proxy || :
+
+%post proxy-postgresql
+ln -sf %{_sbindir}/zabbix_proxy-postgresql %{_sbindir}/zabbix_proxy || :
+
+%post proxy-sqlite3
+ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 
 %post proxy
 %systemd_post zabbix_proxy.service
@@ -400,9 +576,27 @@ fi
 %files proxy
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_proxy.conf
-%attr(755,root,root) %{_sbindir}/zabbix_proxy
+%ghost %attr(755,root,root) %{_sbindir}/zabbix_proxy
 %{_mandir}/man8/zabbix_proxy*
 %{systemdunitdir}/zabbix_proxy.service
+
+%if %{with mysql}
+%files proxy-mysql
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/zabbix_proxy-mysql
+%endif
+
+%if %{with pgsql}
+%files proxy-postgresql
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/zabbix_proxy-postgresql
+%endif
+
+%if %{with sqlite3}
+%files proxy-sqlite3
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/zabbix_proxy-sqlite3
+%endif
 
 %files sender
 %defattr(644,root,root,755)
@@ -412,22 +606,33 @@ fi
 %files server
 %defattr(644,root,root,755)
 %doc upgrades/dbpatches
-%if %{with mysql}
-%doc database/mysql
-%endif
-%if %{with pgsql}
-%doc database/postgresql
-%endif
-%if %{with oracle}
-%doc database/oracle
-%endif
-%if %{with sqlite3}
-%doc database/sqlite3
-%endif
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
-%attr(755,root,root) %{_sbindir}/zabbix_server
+%ghost %attr(755,root,root) %{_sbindir}/zabbix_server
 %{_mandir}/man8/zabbix_server*
 %{systemdunitdir}/zabbix_server.service
+
+%if %{with mysql}
+%files server-mysql
+%defattr(644,root,root,755)
+%doc database/mysql/*.sql install-mysql/upgrade
+%attr(755,root,root) %{_sbindir}/zabbix_server-mysql
+%endif
+
+%if %{with pgsql}
+%files server-postgresql
+%defattr(644,root,root,755)
+%doc database/postgresql/*.sql install-postgresql/upgrade
+%attr(755,root,root) %{_sbindir}/zabbix_server-postgresql
+%endif
+
+%if %{with sqlite3}
+%files server-sqlite3
+%defattr(644,root,root,755)
+%doc database/sqlite3/*.sql
+%attr(755,root,root) %{_sbindir}/zabbix_server-sqlite3
+%dir %attr(771,root,zabbix) /var/lib/zabbix
+%ghost %attr(644,zabbix,zabbix) /var/lib/zabbix/zabbix.db
+%endif
 
 %if %{with java}
 %files java
