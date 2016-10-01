@@ -8,6 +8,7 @@
 %bcond_without	java	# disable java support
 
 %define databases %{?with_pgsql:postgresql} %{?with_mysql:mysql} %{?with_sqlite3:sqlite3}
+%define any_database %{with pgsql}%{with mysql}%{with sqlite3}
 
 %define		php_min_version 5.4.0
 Summary:	Zabbix - network monitoring software
@@ -575,6 +576,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %attr(755,root,root) %{_bindir}/zabbix_get
 %{_mandir}/man1/zabbix_get*
 
+%if %{any_database}
 %files proxy
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_proxy.conf
@@ -582,6 +584,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %ghost %attr(755,root,root) %{_sbindir}/zabbix_proxy
 %{_mandir}/man8/zabbix_proxy*
 %{systemdunitdir}/zabbix_proxy.service
+%endif
 
 %if %{with mysql}
 %files proxy-mysql
@@ -606,6 +609,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %attr(755,root,root) %{_bindir}/zabbix_sender
 %{_mandir}/man1/zabbix_sender*
 
+%if %{any_database}
 %files server
 %defattr(644,root,root,755)
 %doc upgrades/dbpatches
@@ -614,6 +618,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %ghost %attr(755,root,root) %{_sbindir}/zabbix_server
 %{_mandir}/man8/zabbix_server*
 %{systemdunitdir}/zabbix_server.service
+%endif
 
 %if %{with mysql}
 %files server-mysql
