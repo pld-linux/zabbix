@@ -28,6 +28,7 @@ Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
+Patch2:		tag_conditions.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
@@ -290,6 +291,7 @@ This package provides the Zabbix Java Gateway.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 
