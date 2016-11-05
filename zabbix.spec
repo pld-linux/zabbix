@@ -129,6 +129,7 @@ Requires:	php(xmlreader)
 Requires:	php(xmlwriter)
 Requires:	webapps
 Requires:	webserver(alias)
+Requires:	webserver(indexfile)
 Requires:	webserver(php)
 Suggests:	php(mysql)
 Suggests:	php(pgsql)
