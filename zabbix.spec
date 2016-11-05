@@ -278,8 +278,12 @@ Obsoletes:	%{name}-server-postgresql
 %description server-sqlite3
 This package provides the Zabbix server binary for use with SQLite 3 database.
 
+NOTE: Support for SQLite 3 is EXPERIMENTAL and not recommended.
+
 %description server-sqlite3 -l pl.UTF-8
 Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych SQLite 3.
+
+INFO: Wsparcie dla SQLite 3 jest EKSPERYMENTALNE i nie rekomendowane.
 
 %package java
 Summary:	Zabbix Java Gateway
