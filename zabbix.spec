@@ -128,6 +128,7 @@ Requires:	php(xml)
 Requires:	php(xmlreader)
 Requires:	php(xmlwriter)
 Requires:	webapps
+Requires:	webserver(alias)
 Requires:	webserver(php)
 Suggests:	php(mysql)
 Suggests:	php(pgsql)
