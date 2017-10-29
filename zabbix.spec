@@ -158,8 +158,8 @@ Summary:	Zabbix proxy
 Summary(pl.UTF-8):	Proxy do Zabbiksa
 Group:		Networking/Utilities
 Requires:	%{name}-common = %{version}-%{release}
-Requires:	zabbix-proxy(db) = %{version}-%{release}
 Requires:	systemd-units >= 38
+Requires:	zabbix-proxy(db) = %{version}-%{release}
 
 %description proxy
 This package provides the Zabbix proxy.
@@ -172,8 +172,8 @@ Summary:	MySQL support for Zabbix proxy
 Summary(pl.UTF-8):	Obsługa MySQL dla proxy do Zabbiksa
 Group:		Networking/Utilities
 Provides:	%{name}-proxy(db) = %{version}-%{release}
-Obsoletes:	%{name}-proxy-postgresql
-Obsoletes:	%{name}-proxy-sqlite3
+Obsoletes:	zabbix-proxy-postgresql
+Obsoletes:	zabbix-proxy-sqlite3
 
 %description proxy-mysql
 This package provides the Zabbix proxy binary with MySQL support.
@@ -186,8 +186,8 @@ Summary:	PostgreSQL support for Zabbix proxy
 Summary(pl.UTF-8):	Obsługa PostgreSQL dla proxy do Zabbiksa
 Group:		Networking/Utilities
 Provides:	%{name}-proxy(db) = %{version}-%{release}
-Obsoletes:	%{name}-proxy-mysql
-Obsoletes:	%{name}-proxy-sqlite3
+Obsoletes:	zabbix-proxy-mysql
+Obsoletes:	zabbix-proxy-sqlite3
 
 %description proxy-postgresql
 This package provides the Zabbix proxy binary with PostgreSQL support.
@@ -200,8 +200,8 @@ Summary:	SQLite 3 support for Zabbix proxy
 Summary(pl.UTF-8):	Obsługa SQLite 3 dla proxy do Zabbiksa
 Group:		Networking/Utilities
 Provides:	%{name}-proxy(db) = %{version}-%{release}
-Obsoletes:	%{name}-proxy-mysql
-Obsoletes:	%{name}-proxy-postgresql
+Obsoletes:	zabbix-proxy-mysql
+Obsoletes:	zabbix-proxy-postgresql
 
 %description proxy-sqlite3
 This package provides the Zabbix proxy binary with SQLite 3 support.
@@ -242,11 +242,12 @@ Summary:	MySQL support for Zabbix server
 Summary(pl.UTF-8):	Obsługa MySQL sla serwera Zabbiksa
 Group:		Networking/Utilities
 Provides:	%{name}-server(db) = %{version}-%{release}
-Obsoletes:	%{name}-server-postgresql
-Obsoletes:	%{name}-server-sqlite3
+Obsoletes:	zabbix-server-postgresql
+Obsoletes:	zabbix-server-sqlite3
 
 %description server-mysql
-This package provides the Zabbix server binary for use with MySQL database.
+This package provides the Zabbix server binary for use with MySQL
+database.
 
 %description server-mysql -l pl.UTF-8
 Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych MySQL.
@@ -256,11 +257,12 @@ Summary:	PostgreSQL support for Zabbix server
 Summary(pl.UTF-8):	Obsługa PostgreSQL sla serwera Zabbiksa
 Group:		Networking/Utilities
 Provides:	%{name}-server(db) = %{version}-%{release}
-Obsoletes:	%{name}-server-mysql
-Obsoletes:	%{name}-server-sqlite3
+Obsoletes:	zabbix-server-mysql
+Obsoletes:	zabbix-server-sqlite3
 
 %description server-postgresql
-This package provides the Zabbix server binary for use with PostgreSQL database.
+This package provides the Zabbix server binary for use with PostgreSQL
+database.
 
 %description server-postgresql -l pl.UTF-8
 Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych PostgreSQL.
@@ -271,11 +273,12 @@ Summary(pl.UTF-8):	Obsługa SQLite 3 sla serwera Zabbiksa
 Group:		Networking/Utilities
 Requires(post):	/bin/zcat
 Provides:	%{name}-server(db) = %{version}-%{release}
-Obsoletes:	%{name}-server-mysql
-Obsoletes:	%{name}-server-postgresql
+Obsoletes:	zabbix-server-mysql
+Obsoletes:	zabbix-server-postgresql
 
 %description server-sqlite3
-This package provides the Zabbix server binary for use with SQLite 3 database.
+This package provides the Zabbix server binary for use with SQLite 3
+database.
 
 NOTE: Support for SQLite 3 is EXPERIMENTAL and not recommended.
 
@@ -320,7 +323,7 @@ configure() {
 
 configure \
 	--disable-server \
-	--disable-proxy 
+	--disable-proxy
 
 %{__make}
 
