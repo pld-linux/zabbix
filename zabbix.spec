@@ -577,12 +577,13 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %files frontend-php
 %defattr(644,root,root,755)
 %attr(750,root,http) %dir %{_webapps}/%{_webapp}
-%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/*
-%{_appdir}/frontends/php
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/apache.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/httpd.conf
 %ghost %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/frontend/zabbix.conf.php
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/frontend/.htaccess
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/frontend/maintenance.inc.php
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/frontend/zabbix.conf.php.example
+%{_appdir}/frontends/php
 
 %files get
 %defattr(644,root,root,755)
