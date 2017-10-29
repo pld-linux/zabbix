@@ -135,6 +135,7 @@ Suggests:	php(pgsql)
 Suggests:	php(sqlite3)
 # used with sqlite3
 Suggests:	php(sysvsem)
+BuildArch:	noarch
 
 %description frontend-php
 This package provides web based (PHP) frontend for Zabbix.
