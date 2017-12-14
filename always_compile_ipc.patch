@@ -1,0 +1,12 @@
+diff -dur zabbix-3.4.4.orig/configure.ac zabbix-3.4.4/configure.ac
+--- zabbix-3.4.4.orig/configure.ac	2017-11-09 11:37:33.000000000 +0100
++++ zabbix-3.4.4/configure.ac	2017-12-14 14:14:18.000000000 +0100
+@@ -1354,7 +1354,7 @@
+ fi
+ 
+ dnl Check if Zabbix internal IPC services are used
+-have_ipcservice="no"
++have_ipcservice="yes"
+ if test "x$have_ipmi" = "xyes"; then
+ 	have_ipcservice="yes"
+ fi

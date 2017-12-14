@@ -7,7 +7,7 @@
 %bcond_without	mysql	# enable MySQL support
 %bcond_without	java	# disable java support
 
-%define databases %{?with_pgsql:postgresql} %{?with_mysql:mysql} %{?with_sqlite3:sqlite3}
+%define databases %{?with_sqlite3:sqlite3} %{?with_pgsql:postgresql} %{?with_mysql:mysql}
 %define any_database %{with pgsql}%{with mysql}%{with sqlite3}
 
 %define		php_min_version 5.4.0
@@ -28,7 +28,7 @@ Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
-Patch2:		sqlite3_dbname.patch
+Patch2:		always_compile_ipc.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
@@ -317,9 +317,14 @@ cp -a include/config.h include/config.h.old
 cp -a include/stamp-h1 include/stamp-h1.old
 
 for database in %{databases} ; do
+	if [ "$database" = "sqlite3" ] ; then
+		enable_server=""
+	else
+		enable_server="--enable-server"
+	fi
 	configure \
 		--with-$database \
-		--enable-server \
+		$enable_server \
 		--enable-proxy
 
 	# restore timestamps
@@ -335,19 +340,22 @@ for database in %{databases} ; do
 
 	%{__make}
 
-	%{__make} install \
-		-C src/zabbix_server \
-		DESTDIR=$PWD/install-${database}
+	if [ "$enable_server" ] ; then
+		%{__make} install \
+			-C src/zabbix_server \
+			DESTDIR=$PWD/install-${database}
+
+		# prepare dirs for %%doc
+		for dir in upgrades/dbpatches/* ; do
+			[ -d $dir/${database} ] || continue
+			mkdir -p install-${database}/upgrade/$(basename $dir)
+			cp -a $dir/${databases}/* install-${database}/upgrade/$(basename $dir)
+		done
+	fi
+
 	%{__make} install \
 		-C src/zabbix_proxy \
 		DESTDIR=$PWD/install-${database}
-
-	# prepare dirs for %%doc
-	for dir in upgrades/dbpatches/* ; do
-		[ -d $dir/${database} ] || continue
-		mkdir -p install-${database}/upgrade/$(basename $dir)
-		cp -a $dir/${databases}/* install-${database}/upgrade/$(basename $dir)
-	done
 done
 
 %install
@@ -360,8 +368,10 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/webapps/%{_webapp},%{_appdir}} \
 	ZJG_DEST=$RPM_BUILD_ROOT%{_datadir}/zabbix_java
 
 for database in %{databases} ; do
-	cp -p install-$database/%{_sbindir}/zabbix_server \
-		$RPM_BUILD_ROOT%{_sbindir}/zabbix_server-$database
+	if [ "$database" != "sqlite3" ] ; then
+		cp -p install-$database/%{_sbindir}/zabbix_server \
+			$RPM_BUILD_ROOT%{_sbindir}/zabbix_server-$database
+	fi
 	cp -p install-$database/%{_sbindir}/zabbix_proxy \
 		$RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy-$database
 done
