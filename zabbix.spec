@@ -14,12 +14,12 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	3.2.6
+Version:	3.4.4
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	87428256f7e48b8bf10a926df27a34c8
+# Source0-md5:	3211dd373fa3424be3ab3a0ee9c48816
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -28,17 +28,20 @@ Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
+Patch2:		sqlite3_dbname.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
 %{?with_java:BuildRequires:	jdk}
+BuildRequires:	libevent-devel
 BuildRequires:	libssh2-devel
 BuildRequires:	libxml2-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	pcre-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 1.671
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
@@ -268,26 +271,6 @@ database.
 %description server-postgresql -l pl.UTF-8
 Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych PostgreSQL.
 
-%package server-sqlite3
-Summary:	SQLite 3 support for Zabbix server
-Summary(pl.UTF-8):	Obsługa SQLite 3 sla serwera Zabbiksa
-Group:		Networking/Utilities
-Requires(post):	/bin/zcat
-Provides:	%{name}-server(db) = %{version}-%{release}
-Obsoletes:	zabbix-server-mysql
-Obsoletes:	zabbix-server-postgresql
-
-%description server-sqlite3
-This package provides the Zabbix server binary for use with SQLite 3
-database.
-
-NOTE: Support for SQLite 3 is EXPERIMENTAL and not recommended.
-
-%description server-sqlite3 -l pl.UTF-8
-Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych SQLite 3.
-
-INFO: Wsparcie dla SQLite 3 jest EKSPERYMENTALNE i nie rekomendowane.
-
 %package java
 Summary:	Zabbix Java Gateway
 Group:		Networking/Utilities
@@ -302,6 +285,7 @@ This package provides the Zabbix Java Gateway.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 
@@ -485,21 +469,6 @@ EOF
 fi
 ln -sf %{_sbindir}/zabbix_server-postgresql %{_sbindir}/zabbix_server || :
 
-%post server-sqlite3
-if [ "$1" = 1 ]; then
-	if [ ! -f /var/lib/zabbix/zabbix.db ] ; then
-		%banner -e %{name}-server <<-EOF
-		Creating sqlite3 database for Zabbix in /var/lib/zabbix/zabbix.db
-EOF
-		zcat %{_docdir}/%{name}-server-sqlite3-%{version}/schema.sql.gz | sqlite3 /var/lib/zabbix/zabbix.db && \
-		zcat %{_docdir}/%{name}-server-sqlite3-%{version}/images.sql.gz | sqlite3 /var/lib/zabbix/zabbix.db && \
-		zcat %{_docdir}/%{name}-server-sqlite3-%{version}/data.sql.gz | sqlite3 /var/lib/zabbix/zabbix.db && \
-		chown zabbix:zabbix /var/lib/zabbix/zabbix.db && \
-		chmod 644 /var/lib/zabbix/zabbix.db || :
-	fi
-fi
-ln -sf %{_sbindir}/zabbix_server-sqlite3 %{_sbindir}/zabbix_server || :
-
 %post server
 %systemd_post zabbix_server.service
 
@@ -646,15 +615,6 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %defattr(644,root,root,755)
 %doc database/postgresql/*.sql install-postgresql/upgrade
 %attr(755,root,root) %{_sbindir}/zabbix_server-postgresql
-%endif
-
-%if %{with sqlite3}
-%files server-sqlite3
-%defattr(644,root,root,755)
-%doc database/sqlite3/*.sql
-%attr(755,root,root) %{_sbindir}/zabbix_server-sqlite3
-%dir %attr(771,root,zabbix) /var/lib/zabbix
-%ghost %attr(644,zabbix,zabbix) /var/lib/zabbix/zabbix.db
 %endif
 
 %if %{with java}
