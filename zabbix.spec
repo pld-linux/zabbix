@@ -30,6 +30,9 @@ Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
 URL:		http://zabbix.sourceforge.net/
+BuildRequires:	autoconf
+BuildRequires:	automake >= 1:1.15
+BuildRequires:	libtool
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
@@ -288,6 +291,11 @@ This package provides the Zabbix Java Gateway.
 %patch2 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 
 configure() {
 	%configure \
