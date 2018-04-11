@@ -1,5 +1,5 @@
 # TODO:
-# - initscript for zabbix-agentd, zabbix-server, zabbix-proxy and zabbix-java
+# - initscript for zabbix-server, zabbix-proxy and zabbix-java
 #
 # Conditional build:
 %bcond_without	pgsql 	# enable PostgreSQL support
@@ -26,19 +26,20 @@ Source3:	%{name}_agentd.service
 Source4:	%{name}_proxy.service
 Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
+Source7:	%{name}_agentd.init
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
 URL:		http://zabbix.sourceforge.net/
+BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.15
-BuildRequires:	libtool
-BuildRequires:	OpenIPMI-devel
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
 %{?with_java:BuildRequires:	jdk}
 BuildRequires:	libevent-devel
 BuildRequires:	libssh2-devel
+BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
@@ -108,6 +109,8 @@ Requires:	%{name}-common = %{version}-%{release}
 Requires:	systemd-units >= 38
 Obsoletes:	zabbix-agent-inetd
 Obsoletes:	zabbix-agent-standalone
+Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 
 %description agentd
 Zabbix agent collects data from the local system for a Zabbix server.
@@ -368,7 +371,7 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/webapps/%{_webapp},%{_appdir}} \
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/rc.d/init.d,/etc/webapps/%{_webapp},%{_appdir}} \
 	$RPM_BUILD_ROOT{/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
 
 %{__make} install \
@@ -401,6 +404,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 
 install	%{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_server.service
 install	%{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agentd.service
+install	%{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agentd
 install	%{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_proxy.service
 install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service
 
@@ -502,9 +506,15 @@ fi
 %systemd_reload
 
 %post agentd
+/sbin/chkconfig --add zabbix_agentd
+%service zabbix_agentd restart
 %systemd_post zabbix_agentd.service
 
 %preun agentd
+if [ "$1" = "0" ]; then
+	%service -q zabbix_agentd stop
+	/sbin/chkconfig --del zabbix_agentd
+fi
 %systemd_preun zabbix_agentd.service
 
 %postun agentd
@@ -557,6 +567,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %doc conf/zabbix_agentd/*.conf
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agentd.conf
 %dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_agentd.conf.d
+%attr(754,root,root) /etc/rc.d/init.d/zabbix_agentd
 %attr(755,root,root) %{_sbindir}/zabbix_agentd
 %{_mandir}/man8/zabbix_agentd*
 %{systemdunitdir}/zabbix_agentd.service
