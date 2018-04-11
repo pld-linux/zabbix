@@ -1,11 +1,10 @@
-diff -dur zabbix-3.2.0.orig/conf/zabbix_agentd.conf zabbix-3.2.0/conf/zabbix_agentd.conf
 --- zabbix-3.2.0.orig/conf/zabbix_agentd.conf	2016-09-13 14:20:55.000000000 +0200
 +++ zabbix-3.2.0/conf/zabbix_agentd.conf	2016-10-01 18:42:28.000000000 +0200
 @@ -9,6 +9,7 @@
  # Mandatory: no
  # Default:
  # PidFile=/tmp/zabbix_agentd.pid
-+PidFile=/run/zabbix/zabbix_agentd.pid
++PidFile=/var/run/zabbix/zabbix_agentd.pid
  
  ### Option: LogType
  #	Specifies where log messages are written to:
@@ -27,7 +26,6 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_agentd.conf zabbix-3.2.0/conf/zabbix_age
  
  ####### USER-DEFINED MONITORED PARAMETERS #######
  
-diff -dur zabbix-3.2.0.orig/conf/zabbix_proxy.conf zabbix-3.2.0/conf/zabbix_proxy.conf
 --- zabbix-3.2.0.orig/conf/zabbix_proxy.conf	2016-09-13 14:20:55.000000000 +0200
 +++ zabbix-3.2.0/conf/zabbix_proxy.conf	2016-10-01 18:42:44.000000000 +0200
 @@ -82,7 +82,7 @@
@@ -44,7 +42,7 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_proxy.conf zabbix-3.2.0/conf/zabbix_prox
  # Mandatory: no
  # Default:
 -# PidFile=/tmp/zabbix_proxy.pid
-+PidFile=/run/zabbix/zabbix_proxy.pid
++PidFile=/var/run/zabbix/zabbix_proxy.pid
  
  ### Option: DBHost
  #	Database host name.
@@ -57,7 +55,6 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_proxy.conf zabbix-3.2.0/conf/zabbix_prox
  
  ### Option: SSLCertLocation
  #	Location of SSL client certificates.
-diff -dur zabbix-3.2.0.orig/conf/zabbix_server.conf zabbix-3.2.0/conf/zabbix_server.conf
 --- zabbix-3.2.0.orig/conf/zabbix_server.conf	2016-09-13 14:20:55.000000000 +0200
 +++ zabbix-3.2.0/conf/zabbix_server.conf	2016-10-01 18:43:07.000000000 +0200
 @@ -35,7 +35,7 @@
@@ -74,7 +71,7 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_server.conf zabbix-3.2.0/conf/zabbix_ser
  # Mandatory: no
  # Default:
 -# PidFile=/tmp/zabbix_server.pid
-+PidFile=/run/zabbix/zabbix_server.pid
++PidFile=/var/run/zabbix/zabbix_server.pid
  
  ### Option: DBHost
  #	Database host name.
@@ -87,7 +84,6 @@ diff -dur zabbix-3.2.0.orig/conf/zabbix_server.conf zabbix-3.2.0/conf/zabbix_ser
  
  ### Option: SSLCertLocation
  #	Location of SSL client certificates.
-diff -dur zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php
 --- zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php	2016-09-13 14:21:05.000000000 +0200
 +++ zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php	2016-10-01 18:42:06.000000000 +0200
 @@ -386,7 +386,7 @@
@@ -99,7 +95,6 @@ diff -dur zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php
  				]),
  			];
  		}
-diff -dur zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml zabbix-3.2.0/src/zabbix_java/lib/logback.xml
 --- zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml	2016-09-13 14:20:55.000000000 +0200
 +++ zabbix-3.2.0/src/zabbix_java/lib/logback.xml	2016-10-01 18:42:06.000000000 +0200
 @@ -2,10 +2,10 @@
@@ -115,7 +110,6 @@ diff -dur zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml zabbix-3.2.0/src/zab
  			<minIndex>1</minIndex>
  			<maxIndex>3</maxIndex>
  		</rollingPolicy>
-diff -dur zabbix-3.2.0.orig/src/zabbix_java/settings.sh zabbix-3.2.0/src/zabbix_java/settings.sh
 --- zabbix-3.2.0.orig/src/zabbix_java/settings.sh	2016-09-13 14:20:55.000000000 +0200
 +++ zabbix-3.2.0/src/zabbix_java/settings.sh	2016-10-01 18:42:06.000000000 +0200
 @@ -24,7 +24,7 @@
@@ -123,7 +117,7 @@ diff -dur zabbix-3.2.0.orig/src/zabbix_java/settings.sh zabbix-3.2.0/src/zabbix_
  # PID_FILE=
  
 -PID_FILE="/tmp/zabbix_java.pid"
-+PID_FILE="/run/zabbix/zabbix_java.pid"
++PID_FILE="/var/run/zabbix/zabbix_java.pid"
  
  ### Option: zabbix.startPollers
  #	Number of worker threads to start.

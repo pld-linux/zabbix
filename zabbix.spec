@@ -15,7 +15,7 @@ Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	3.4.5
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
@@ -372,7 +372,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/rc.d/init.d,/etc/webapps/%{_webapp},%{_appdir}} \
-	$RPM_BUILD_ROOT{/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
+	$RPM_BUILD_ROOT{/var/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -558,7 +558,7 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %attr(751,root,http) %dir %{_sysconfdir}/frontend
 %dir %{_appdir}
 %dir %{_appdir}/frontends
-%dir %attr(770,root,zabbix) /run/zabbix
+%dir %attr(770,root,zabbix) /var/run/zabbix
 %dir %attr(775,root,zabbix) /var/log/zabbix
 %{systemdtmpfilesdir}/zabbix.conf
 

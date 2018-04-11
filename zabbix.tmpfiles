@@ -1,1 +1,1 @@
-d /run/zabbix 0770 root zabbix -
+d /var/run/zabbix 0770 root zabbix -
