@@ -14,12 +14,12 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	3.4.14
+Version:	4.0.0
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	16cdacf7198538c0456523d75bb149c7
+# Source0-md5:	38c5ce373f1901c81b70a8816f522476
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -30,6 +30,7 @@ Source7:	%{name}_agentd.init
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
+Patch3:		notests.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
@@ -50,6 +51,7 @@ BuildRequires:	pcre-devel
 BuildRequires:	rpmbuild(macros) >= 1.671
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	unixODBC-devel
+BuildRequires:	zlib-devel
 Requires:	%{name}-agentd = %{version}-%{release}
 Requires:	%{name}-frontend-php = %{version}-%{release}
 Requires:	%{name}-server = %{version}-%{release}
@@ -292,6 +294,7 @@ This package provides the Zabbix Java Gateway.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -323,10 +326,6 @@ configure \
 
 %{__make}
 
-# keep timestamps to prevent unneccessary rebuilds
-cp -a include/config.h include/config.h.old
-cp -a include/stamp-h1 include/stamp-h1.old
-
 for database in %{databases} ; do
 	if [ "$database" = "sqlite3" ] ; then
 		enable_server=""
@@ -338,30 +337,12 @@ for database in %{databases} ; do
 		$enable_server \
 		--enable-proxy
 
-	# restore timestamps
-	touch --reference=include/config.h.old include/config.h
-	touch --reference=include/stamp-h1.old include/stamp-h1
-
-	# clean what needs rebuilding
-	for dir in src/libs/zbxdb* src/libs/zbxserver ; do
-		%{__make} -C $dir clean
-	done
-
-	touch include/zbxdb.h
-
 	%{__make}
 
 	if [ "$enable_server" ] ; then
 		%{__make} install \
 			-C src/zabbix_server \
 			DESTDIR=$PWD/install-${database}
-
-		# prepare dirs for %%doc
-		for dir in upgrades/dbpatches/* ; do
-			[ -d $dir/${database} ] || continue
-			mkdir -p install-${database}/upgrade/$(basename $dir)
-			cp -a $dir/${databases}/* install-${database}/upgrade/$(basename $dir)
-		done
 	fi
 
 	%{__make} install \
@@ -624,7 +605,6 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %if %{any_database}
 %files server
 %defattr(644,root,root,755)
-%doc upgrades/dbpatches
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_server.conf
 %dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_server.conf.d
 %ghost %attr(755,root,root) %{_sbindir}/zabbix_server
@@ -635,14 +615,14 @@ ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %if %{with mysql}
 %files server-mysql
 %defattr(644,root,root,755)
-%doc database/mysql/*.sql install-mysql/upgrade
+%doc database/mysql/*.sql
 %attr(755,root,root) %{_sbindir}/zabbix_server-mysql
 %endif
 
 %if %{with pgsql}
 %files server-postgresql
 %defattr(644,root,root,755)
-%doc database/postgresql/*.sql install-postgresql/upgrade
+%doc database/postgresql/*.sql
 %attr(755,root,root) %{_sbindir}/zabbix_server-postgresql
 %endif
 
