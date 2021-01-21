@@ -10,16 +10,16 @@
 %define databases %{?with_sqlite3:sqlite3} %{?with_pgsql:postgresql} %{?with_mysql:mysql}
 %define any_database %{with pgsql}%{with mysql}%{with sqlite3}
 
-%define		php_min_version 5.4.0
+%define		php_min_version 7.2.5
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	4.2.0
-Release:	4
+Version:	5.2.3
+Release:	0.1
 License:	GPL v2+
 Group:		Networking/Utilities
-Source0:	http://downloads.sourceforge.net/zabbix/%{name}-%{version}.tar.gz
-# Source0-md5:	20f261708f95787f3dbea3eab89f804d
+Source0:	https://cdn.zabbix.com/zabbix/sources/stable/5.2/%{name}-%{version}.tar.gz
+# Source0-md5:	20445897eb25c65a1ed1b62db7c5f04b
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -303,12 +303,15 @@ This package provides the Zabbix Java Gateway.
 
 configure() {
 	%configure \
+	--enable-dependency-tracking \
 	--enable-agent \
 	--enable-ipv6 \
 	%{__enable_disable java} \
 	--with-jabber \
 	--with-ldap \
 	--with-libcurl \
+	--with-libevent \
+	--with-libpcre \
 	--with-libxml2 \
 	--with-net-snmp \
 	--with-openipmi \
@@ -350,7 +353,7 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/rc.d/init.d,/etc/webapps/%{_webapp},%{_appdir}} \
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/rc.d/init.d,/etc/webapps/%{_webapp},%{_appdir}/frontends/php} \
 	$RPM_BUILD_ROOT{/var/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
 
 %{__make} install \
@@ -376,7 +379,7 @@ install -d $RPM_BUILD_ROOT/var/lib/zabbix
 touch $RPM_BUILD_ROOT/var/lib/zabbix/zabbix.db
 %endif
 
-cp -r frontends $RPM_BUILD_ROOT%{_appdir}
+cp -r ui/* $RPM_BUILD_ROOT%{_appdir}/frontends/php
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf

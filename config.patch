@@ -84,17 +84,17 @@
  
  ### Option: SSLCertLocation
  #	Location of SSL client certificates.
---- zabbix-3.2.0.orig/frontends/php/include/classes/setup/CSetupWizard.php	2016-09-13 14:21:05.000000000 +0200
-+++ zabbix-3.2.0/frontends/php/include/classes/setup/CSetupWizard.php	2016-10-01 18:42:06.000000000 +0200
-@@ -386,7 +386,7 @@
- 				new CTag('p', true, _('Alternatively, you can install it manually:')),
- 				new CTag('ol', true, [
- 					new CTag('li', true, new CLink(_('Download the configuration file'), 'setup.php?save_config=1')),
--					new CTag('li', true, _s('Save it as "%1$s"', $config_file_name))
-+					new CTag('li', true, _s('Save it as "%1$s"', '/etc/zabbix/frontend/zabbix.conf.php'))
- 				]),
- 			];
- 		}
+--- a/ui/include/classes/setup/CSetupWizard.php~	2020-12-21 10:47:57.000000000 +0100
++++ b/ui/include/classes/setup/CSetupWizard.php	2021-01-21 21:53:01.877820978 +0100
+@@ -604,7 +604,7 @@ class CSetupWizard extends CForm {
+ 
+ 		$this->setConfig('ZBX_CONFIG_FILE_CORRECT', true);
+ 
+-		$config_file_name = APP::getInstance()->getRootDir().CConfigFile::CONFIG_FILE_PATH;
++		$config_file_name = '/etc/zabbix/frontend/zabbix.conf.php';
+ 		$config = new CConfigFile($config_file_name);
+ 		$config->config = [
+ 			'DB' => [
 --- zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml	2016-09-13 14:20:55.000000000 +0200
 +++ zabbix-3.2.0/src/zabbix_java/lib/logback.xml	2016-10-01 18:42:06.000000000 +0200
 @@ -2,10 +2,10 @@

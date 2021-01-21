@@ -20,10 +20,10 @@ diff -dur -x '*~' -x '*.orig' -x '*.rej' zabbix-3.4.4.orig/src/libs/zbxdb/db.c z
  #endif
  
  #ifndef HAVE_MYSQL
-@@ -608,6 +609,10 @@
- 	ZBX_UNUSED(password);
- 	ZBX_UNUSED(dbschema);
- 	ZBX_UNUSED(port);
+@@ -831,6 +831,10 @@ out:
+ 	ZBX_UNUSED(ca);
+ 	ZBX_UNUSED(cipher);
+ 	ZBX_UNUSED(cipher_13);
 +	if (!strchr(dbname, '/') && !strchr(dbname, ':')) {
 +		zbx_snprintf(dbname_buf, sizeof(dbname_buf), "/var/lib/zabbix/%s.db", dbname);
 +		dbname = dbname_buf;
@@ -31,3 +31,4 @@ diff -dur -x '*~' -x '*.orig' -x '*.rej' zabbix-3.4.4.orig/src/libs/zbxdb/db.c z
  #ifdef HAVE_FUNCTION_SQLITE3_OPEN_V2
  	if (SQLITE_OK != sqlite3_open_v2(dbname, &conn, SQLITE_OPEN_READWRITE, NULL))
  #else
+
