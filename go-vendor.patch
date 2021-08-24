@@ -1,0 +1,28 @@
+--- zabbix-5.4.3/src/go/Makefile.am	2021-08-24 18:11:56.298334804 +0300
++++ zabbix-5.4.3/src/go/Makefile.am	2021-08-24 18:27:30.560260563 +0300
+@@ -40,10 +40,10 @@
+ all: build
+ 
+ zabbix.com/cmd/zabbix_agent2:
+-	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -ldflags="${AGENT_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_agent2
++	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -mod=vendor -ldflags="${AGENT_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_agent2
+ 
+ zabbix.com/cmd/zabbix_web_service:
+-	go build -ldflags="${WEBSERVICE_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_web_service
++	go build -mod=vendor -ldflags="${WEBSERVICE_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_web_service
+ 
+ build: ${TARGETS}
+ 
+@@ -53,10 +53,10 @@
+ 
+ install-zabbix.com/cmd/zabbix_agent2:
+ 	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=$(DESTDIR)${GOBIN} \
+-		go install -ldflags="${AGENT_GOLDFLAGS}" ${TARGETS}
++		go install -mod=vendor -ldflags="${AGENT_GOLDFLAGS}" ${TARGETS}
+ 
+ install-zabbix.com/cmd/zabbix_web_service:
+-	GOBIN=$(DESTDIR)${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
++	GOBIN=$(DESTDIR)${GOBIN} go install -mod=vendor -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
+ 
+ install-exec-local: ${INSTALL_TARGETS}
+ 
