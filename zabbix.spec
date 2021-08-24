@@ -311,7 +311,6 @@ configure() {
 	--enable-agent \
 	--enable-ipv6 \
 	%{__enable_disable java} \
-	--with-jabber \
 	--with-ldap \
 	--with-libcurl \
 	--with-libevent \
