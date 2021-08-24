@@ -15,6 +15,10 @@
 %define databases %{?with_sqlite3:sqlite3} %{?with_pgsql:postgresql} %{?with_mysql:mysql}
 %define any_database %{with pgsql}%{with mysql}%{with sqlite3}
 
+%ifnarch %{ix86} %{x8664}
+%undefine	with_agent2
+%endif
+
 %define		php_min_version 7.2.5
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
