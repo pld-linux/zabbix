@@ -10,6 +10,7 @@
 %bcond_without	sqlite3	# enable sqlite3 support
 %bcond_without	mysql	# enable MySQL support
 %bcond_without	java	# disable java support
+%bcond_without	agent2	# disable bulding of Go based agent2
 
 %define databases %{?with_sqlite3:sqlite3} %{?with_pgsql:postgresql} %{?with_mysql:mysql}
 %define any_database %{with pgsql}%{with mysql}%{with sqlite3}
@@ -42,6 +43,7 @@ BuildRequires:	automake >= 1:1.15
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
 %{?with_java:BuildRequires:	jdk}
+%{?with_agent2:BuildRequires:	golang >= 1.13}
 BuildRequires:	libevent-devel
 BuildRequires:	libssh2-devel
 BuildRequires:	libtool
@@ -123,6 +125,32 @@ Zabbix agent collects data from the local system for a Zabbix server.
 
 %description agentd -l pl.UTF-8
 Agent zbiera dane z lokalnej maszyny dla serwera Zabbix.
+
+%package agent2
+Summary:	Zabbix Agent 2
+Group:		Networking/Utilities
+URL:		https://www.zabbix.com/documentation/current/manual/concepts/agent2
+Requires:	%{name}-common = %{version}-%{release}
+
+%description agent2
+Zabbix agent 2 is a new generation of Zabbix agent and may be used in
+place of Zabbix agent.
+
+Zabbix agent 2 has been developed to:
+- reduce the number of TCP connections
+- have greater check concurrency
+- be easily extendible with plugins.
+
+A plugin should be able to:
+- provide trivial checks consisting of only a few simple lines of code
+- provide complex checks consisting of long-running scripts and
+  standalone data gathering with periodic sending back of the data
+- be a drop-in replacement for Zabbix agent (in that it supports all
+  the previous functionality)
+
+Passive checks work similarly to Zabbix agent. Active checks support
+scheduled/flexible intervals and check concurrency within one active
+server.
 
 %package frontend-php
 Summary:	PHP frontend for Zabbix
@@ -310,6 +338,7 @@ configure() {
 	%configure \
 	--enable-dependency-tracking \
 	--enable-agent \
+	%{__enable_disable agent2} \
 	--enable-ipv6 \
 	%{__enable_disable java} \
 	--with-ldap \
@@ -557,6 +586,13 @@ ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %attr(755,root,root) %{_sbindir}/zabbix_agentd
 %{_mandir}/man8/zabbix_agentd*
 %{systemdunitdir}/zabbix_agentd.service
+
+%if %{with agent2}
+%files agent2
+%defattr(644,root,root,755)
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent2.conf
+%attr(755,root,root) %{_sbindir}/zabbix_agent2
+%endif
 
 %files frontend-php
 %defattr(644,root,root,755)
