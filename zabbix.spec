@@ -1,5 +1,9 @@
 # TODO:
 # - initscript for zabbix-server, zabbix-proxy and zabbix-java
+# - unpackaged files:
+#   /lib/systemd/system/zabbix_java.service
+#   /usr/bin/zabbix_js
+#   /var/lib/zabbix/zabbix.db
 #
 # Conditional build:
 %bcond_without	pgsql 	# enable PostgreSQL support
