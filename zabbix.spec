@@ -370,8 +370,8 @@ for database in %{databases} ; do
 done
 
 if [ -n "$database" ] ; then
-	ln -sf %{_sbindir}/zabbix_server-$database $RPM_BUILD_ROOT%{_sbindir}/zabbix_server
-	ln -sf %{_sbindir}/zabbix_proxy-$database $RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy
+	ln -sf zabbix_server-$database $RPM_BUILD_ROOT%{_sbindir}/zabbix_server
+	ln -sf zabbix_proxy-$database $RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy
 fi
 
 %if %{with sqlite3}
@@ -393,16 +393,16 @@ install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service
 cp -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/zabbix.conf
 
 mv $RPM_BUILD_ROOT%{_appdir}/frontends/php/conf $RPM_BUILD_ROOT%{_sysconfdir}/frontend
-ln -s %{_sysconfdir}/frontend $RPM_BUILD_ROOT%{_appdir}/frontends/php/conf
+ln -s --relative $RPM_BUILD_ROOT{%{_sysconfdir}/frontend,%{_appdir}/frontends/php/conf}
 touch $RPM_BUILD_ROOT%{_sysconfdir}/frontend/zabbix.conf.php
 
 %if %{with java}
 mv $RPM_BUILD_ROOT%{_datadir}/zabbix_java/settings.sh $RPM_BUILD_ROOT%{_sysconfdir}/zabbix_java.conf
-ln -s %{_sysconfdir}/zabbix_java.conf $RPM_BUILD_ROOT%{_datadir}/zabbix_java/settings.sh
+ln -s --relative $RPM_BUILD_ROOT{%{_sysconfdir}/zabbix_java.conf,%{_datadir}/zabbix_java/settings.sh}
 mv $RPM_BUILD_ROOT%{_datadir}/zabbix_java/lib/logback.xml $RPM_BUILD_ROOT%{_sysconfdir}/java-logback.xml
-ln -s %{_sysconfdir}/java-logback.xml $RPM_BUILD_ROOT%{_datadir}/zabbix_java/lib/logback.xml
+ln -s --relative $RPM_BUILD_ROOT{%{_sysconfdir}/java-logback.xml,%{_datadir}/zabbix_java/lib/logback.xml}
 mv $RPM_BUILD_ROOT%{_datadir}/zabbix_java/lib/logback-console.xml $RPM_BUILD_ROOT%{_sysconfdir}/java-logback-console.xml
-ln -s %{_sysconfdir}/java-logback-console.xml $RPM_BUILD_ROOT%{_datadir}/zabbix_java/lib/logback-console.xml
+ln -s --relative $RPM_BUILD_ROOT{%{_sysconfdir}/java-logback-console.xml,%{_datadir}/zabbix_java/lib/logback-console.xml}
 
 cat >$RPM_BUILD_ROOT%{_sbindir}/zabbix_java-start <<'EOF'
 #!/bin/sh
@@ -455,7 +455,7 @@ if [ "$1" = 1 ]; then
 	zcat %{_docdir}/%{name}-server-mysql-%{version}/data.sql.gz | mysql zabbix
 EOF
 fi
-ln -sf %{_sbindir}/zabbix_server-mysql %{_sbindir}/zabbix_server || :
+ln -sf zabbix_server-mysql %{_sbindir}/zabbix_server || :
 
 %post server-postgresql
 if [ "$1" = 1 ]; then
@@ -471,7 +471,7 @@ if [ "$1" = 1 ]; then
 	zcat %{_docdir}/%{name}-server-postgresql-%{version}/data.sql.gz | psql -u zabbix zabbix
 EOF
 fi
-ln -sf %{_sbindir}/zabbix_server-postgresql %{_sbindir}/zabbix_server || :
+ln -sf zabbix_server-postgresql %{_sbindir}/zabbix_server || :
 
 %post server
 %systemd_post zabbix_server.service
@@ -503,13 +503,13 @@ fi
 %systemd_reload
 
 %post proxy-mysql
-ln -sf %{_sbindir}/zabbix_proxy-mysql %{_sbindir}/zabbix_proxy || :
+ln -sf zabbix_proxy-mysql %{_sbindir}/zabbix_proxy || :
 
 %post proxy-postgresql
-ln -sf %{_sbindir}/zabbix_proxy-postgresql %{_sbindir}/zabbix_proxy || :
+ln -sf zabbix_proxy-postgresql %{_sbindir}/zabbix_proxy || :
 
 %post proxy-sqlite3
-ln -sf %{_sbindir}/zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
+ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 
 %post proxy
 %systemd_post zabbix_proxy.service
