@@ -1,11 +1,15 @@
---- zabbix-5.2.3/src/go/Makefile.am~	2020-12-14 12:27:17.000000000 +0200
-+++ zabbix-5.2.3/src/go/Makefile.am	2021-08-24 15:25:21.065256983 +0300
-@@ -26,7 +26,7 @@
+--- zabbix-5.4.3/src/go/Makefile.am~	2021-07-19 17:04:10.000000000 +0300
++++ zabbix-5.4.3/src/go/Makefile.am	2021-08-24 14:54:36.169315447 +0300
+@@ -52,11 +52,11 @@
  	rm -f bin/zabbix_agent2 bin/mock_server
  
- install:
+ install-zabbix.com/cmd/zabbix_agent2:
 -	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=${GOBIN} \
 +	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=$(DESTDIR)${GOBIN} \
- 		go install -ldflags="${GOLDFLAGS}" zabbix.com/cmd/zabbix_agent2
- 	test -f "$(DESTDIR)@AGENT2_CONFIG_FILE@" || cp "conf/zabbix_agent2.conf" "$(DESTDIR)@AGENT2_CONFIG_FILE@"
+ 		go install -ldflags="${AGENT_GOLDFLAGS}" ${TARGETS}
  
+ install-zabbix.com/cmd/zabbix_web_service:
+-	GOBIN=${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
++	GOBIN=$(DESTDIR)${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
+ 
+ install-exec-local: ${INSTALL_TARGETS}

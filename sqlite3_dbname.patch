@@ -1,14 +1,13 @@
-diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_proxy.conf zabbix-5.2.3/conf/zabbix_proxy.conf
---- zabbix-5.2.3.org/conf/zabbix_proxy.conf	2021-08-24 11:18:51.673409490 +0200
-+++ zabbix-5.2.3/conf/zabbix_proxy.conf	2021-08-24 11:18:52.353444791 +0200
-@@ -158,6 +158,7 @@ PidFile=/var/run/zabbix/zabbix_proxy.pid
+--- zabbix-5.4.3/conf/zabbix_proxy.conf~	2021-08-24 12:51:15.000000000 +0300
++++ zabbix-5.4.3/conf/zabbix_proxy.conf	2021-08-24 12:52:01.573388850 +0300
+@@ -160,6 +160,7 @@
  ### Option: DBName
  #	Database name.
  #	For SQLite3 path to database file must be provided. DBUser and DBPassword are ignored.
 +#	If provided name does not contain '/' or ':' (no a path or special type) a .db file in /var/lib/zabbix will be used.
- #	Warning: do not attempt to use the same database Zabbix server is using.
- #
- # Mandatory: yes
+ #	If the Net Service Name connection method is used to connect to Oracle database, specify the service name from
+ #	the tnsnames.ora file or set to empty string; also see the TWO_TASK environment variable if DBName is set to
+ #	empty string.
 diff -urNp -x '*.orig' zabbix-5.2.3.org/src/libs/zbxdb/db.c zabbix-5.2.3/src/libs/zbxdb/db.c
 --- zabbix-5.2.3.org/src/libs/zbxdb/db.c	2020-12-14 11:27:17.000000000 +0100
 +++ zabbix-5.2.3/src/libs/zbxdb/db.c	2021-08-24 11:18:52.356778296 +0200

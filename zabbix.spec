@@ -19,12 +19,13 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	5.2.3
+Version:	5.4.3
 Release:	0.1
 License:	GPL v2+
 Group:		Networking/Utilities
-Source0:	https://cdn.zabbix.com/zabbix/sources/stable/5.2/%{name}-%{version}.tar.gz
-# Source0-md5:	20445897eb25c65a1ed1b62db7c5f04b
+# https://www.zabbix.com/download_sources
+Source0:	https://cdn.zabbix.com/zabbix/sources/stable/5.4/%{name}-%{version}.tar.gz
+# Source0-md5:	5dccb536c164e45c7d5c1a5a9d64be43
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -36,7 +37,7 @@ Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
 Patch3:		go-destdir.patch
-URL:		http://zabbix.sourceforge.net/
+URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.15
@@ -593,6 +594,7 @@ ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent2.conf
 %attr(755,root,root) %{_sbindir}/zabbix_agent2
+%{_mandir}/man8/zabbix_agent2.8*
 %endif
 
 %files frontend-php
