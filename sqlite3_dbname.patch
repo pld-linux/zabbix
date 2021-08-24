@@ -1,7 +1,7 @@
-diff -dur -x '*~' -x '*.orig' -x '*.rej' zabbix-3.4.4.orig/conf/zabbix_proxy.conf zabbix-3.4.4/conf/zabbix_proxy.conf
---- zabbix-3.4.4.orig/conf/zabbix_proxy.conf	2017-12-14 13:15:25.000000000 +0100
-+++ zabbix-3.4.4/conf/zabbix_proxy.conf	2017-12-14 13:15:42.000000000 +0100
-@@ -152,6 +152,7 @@
+diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_proxy.conf zabbix-5.2.3/conf/zabbix_proxy.conf
+--- zabbix-5.2.3.org/conf/zabbix_proxy.conf	2021-08-24 11:18:51.673409490 +0200
++++ zabbix-5.2.3/conf/zabbix_proxy.conf	2021-08-24 11:18:52.353444791 +0200
+@@ -158,6 +158,7 @@ PidFile=/var/run/zabbix/zabbix_proxy.pid
  ### Option: DBName
  #	Database name.
  #	For SQLite3 path to database file must be provided. DBUser and DBPassword are ignored.
@@ -9,18 +9,18 @@ diff -dur -x '*~' -x '*.orig' -x '*.rej' zabbix-3.4.4.orig/conf/zabbix_proxy.con
  #	Warning: do not attempt to use the same database Zabbix server is using.
  #
  # Mandatory: yes
-diff -dur -x '*~' -x '*.orig' -x '*.rej' zabbix-3.4.4.orig/src/libs/zbxdb/db.c zabbix-3.4.4/src/libs/zbxdb/db.c
---- zabbix-3.4.4.orig/src/libs/zbxdb/db.c	2017-11-09 11:37:31.000000000 +0100
-+++ zabbix-3.4.4/src/libs/zbxdb/db.c	2017-12-14 13:16:29.000000000 +0100
-@@ -294,6 +294,7 @@
- 	DB_ROW		row;
+diff -urNp -x '*.orig' zabbix-5.2.3.org/src/libs/zbxdb/db.c zabbix-5.2.3/src/libs/zbxdb/db.c
+--- zabbix-5.2.3.org/src/libs/zbxdb/db.c	2020-12-14 11:27:17.000000000 +0100
++++ zabbix-5.2.3/src/libs/zbxdb/db.c	2021-08-24 11:18:52.356778296 +0200
+@@ -383,6 +383,7 @@ int	zbx_db_connect(char *host, char *use
+ 	unsigned int	i = 0;
  #elif defined(HAVE_SQLITE3)
  	char		*p, *path = NULL;
 +	char		dbname_buf[1024];
  #endif
  
  #ifndef HAVE_MYSQL
-@@ -831,6 +831,10 @@ out:
+@@ -830,6 +831,10 @@ out:
  	ZBX_UNUSED(ca);
  	ZBX_UNUSED(cipher);
  	ZBX_UNUSED(cipher_13);
@@ -31,4 +31,3 @@ diff -dur -x '*~' -x '*.orig' -x '*.rej' zabbix-3.4.4.orig/src/libs/zbxdb/db.c z
  #ifdef HAVE_FUNCTION_SQLITE3_OPEN_V2
  	if (SQLITE_OK != sqlite3_open_v2(dbname, &conn, SQLITE_OPEN_READWRITE, NULL))
  #else
-

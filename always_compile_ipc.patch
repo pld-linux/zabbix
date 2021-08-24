@@ -1,8 +1,8 @@
-diff -dur zabbix-3.4.4.orig/configure.ac zabbix-3.4.4/configure.ac
---- zabbix-3.4.4.orig/configure.ac	2017-11-09 11:37:33.000000000 +0100
-+++ zabbix-3.4.4/configure.ac	2017-12-14 14:14:18.000000000 +0100
-@@ -1354,7 +1354,7 @@
- fi
+diff -urNp -x '*.orig' zabbix-5.2.3.org/configure.ac zabbix-5.2.3/configure.ac
+--- zabbix-5.2.3.org/configure.ac	2020-12-21 10:47:57.000000000 +0100
++++ zabbix-5.2.3/configure.ac	2021-08-24 11:18:54.266877449 +0200
+@@ -1672,7 +1672,7 @@ AM_CONDITIONAL(HAVE_IPMI, [test "x$have_
+ AM_CONDITIONAL(HAVE_LIBXML2, test "x$have_libxml2" = "xyes")
  
  dnl Check if Zabbix internal IPC services are used
 -have_ipcservice="no"

@@ -1,5 +1,6 @@
---- zabbix-3.2.0.orig/conf/zabbix_agentd.conf	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/conf/zabbix_agentd.conf	2016-10-01 18:42:28.000000000 +0200
+diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_agentd.conf zabbix-5.2.3/conf/zabbix_agentd.conf
+--- zabbix-5.2.3.org/conf/zabbix_agentd.conf	2020-12-21 10:47:57.000000000 +0100
++++ zabbix-5.2.3/conf/zabbix_agentd.conf	2021-08-24 11:18:50.376675510 +0200
 @@ -9,6 +9,7 @@
  # Mandatory: no
  # Default:
@@ -17,7 +18,7 @@
  
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
-@@ -260,7 +261,7 @@
+@@ -304,7 +305,7 @@ Hostname=Zabbix server
  
  # Include=/usr/local/etc/zabbix_agentd.userparams.conf
  # Include=/usr/local/etc/zabbix_agentd.conf.d/
@@ -26,9 +27,10 @@
  
  ####### USER-DEFINED MONITORED PARAMETERS #######
  
---- zabbix-3.2.0.orig/conf/zabbix_proxy.conf	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/conf/zabbix_proxy.conf	2016-10-01 18:42:44.000000000 +0200
-@@ -82,7 +82,7 @@
+diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_proxy.conf zabbix-5.2.3/conf/zabbix_proxy.conf
+--- zabbix-5.2.3.org/conf/zabbix_proxy.conf	2020-12-21 10:47:57.000000000 +0100
++++ zabbix-5.2.3/conf/zabbix_proxy.conf	2021-08-24 11:18:50.376675510 +0200
+@@ -88,7 +88,7 @@ Hostname=Zabbix proxy
  # Default:
  # LogFile=
  
@@ -37,16 +39,16 @@
  
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
-@@ -112,7 +112,7 @@
+@@ -136,7 +136,7 @@ LogFile=/tmp/zabbix_proxy.log
  #
  # Mandatory: no
  # Default:
 -# PidFile=/tmp/zabbix_proxy.pid
 +PidFile=/var/run/zabbix/zabbix_proxy.pid
  
- ### Option: DBHost
- #	Database host name.
-@@ -543,7 +543,7 @@
+ ### Option: SocketDir
+ #	IPC socket directory.
+@@ -586,7 +586,7 @@ LogSlowQueries=3000
  
  # Include=/usr/local/etc/zabbix_proxy.general.conf
  # Include=/usr/local/etc/zabbix_proxy.conf.d/
@@ -55,8 +57,9 @@
  
  ### Option: SSLCertLocation
  #	Location of SSL client certificates.
---- zabbix-3.2.0.orig/conf/zabbix_server.conf	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/conf/zabbix_server.conf	2016-10-01 18:43:07.000000000 +0200
+diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_server.conf zabbix-5.2.3/conf/zabbix_server.conf
+--- zabbix-5.2.3.org/conf/zabbix_server.conf	2020-12-21 10:47:57.000000000 +0100
++++ zabbix-5.2.3/conf/zabbix_server.conf	2021-08-24 11:18:50.376675510 +0200
 @@ -35,7 +35,7 @@
  # Default:
  # LogFile=
@@ -66,16 +69,16 @@
  
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
-@@ -65,7 +65,7 @@
+@@ -65,7 +65,7 @@ LogFile=/tmp/zabbix_server.log
  #
  # Mandatory: no
  # Default:
 -# PidFile=/tmp/zabbix_server.pid
 +PidFile=/var/run/zabbix/zabbix_server.pid
  
- ### Option: DBHost
- #	Database host name.
-@@ -552,7 +552,7 @@
+ ### Option: SocketDir
+ #	IPC socket directory.
+@@ -620,7 +620,7 @@ LogSlowQueries=3000
  
  # Include=/usr/local/etc/zabbix_server.general.conf
  # Include=/usr/local/etc/zabbix_server.conf.d/
@@ -84,19 +87,9 @@
  
  ### Option: SSLCertLocation
  #	Location of SSL client certificates.
---- a/ui/include/classes/setup/CSetupWizard.php~	2020-12-21 10:47:57.000000000 +0100
-+++ b/ui/include/classes/setup/CSetupWizard.php	2021-01-21 21:53:01.877820978 +0100
-@@ -604,7 +604,7 @@ class CSetupWizard extends CForm {
- 
- 		$this->setConfig('ZBX_CONFIG_FILE_CORRECT', true);
- 
--		$config_file_name = APP::getInstance()->getRootDir().CConfigFile::CONFIG_FILE_PATH;
-+		$config_file_name = '/etc/zabbix/frontend/zabbix.conf.php';
- 		$config = new CConfigFile($config_file_name);
- 		$config->config = [
- 			'DB' => [
---- zabbix-3.2.0.orig/src/zabbix_java/lib/logback.xml	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/src/zabbix_java/lib/logback.xml	2016-10-01 18:42:06.000000000 +0200
+diff -urNp -x '*.orig' zabbix-5.2.3.org/src/zabbix_java/lib/logback.xml zabbix-5.2.3/src/zabbix_java/lib/logback.xml
+--- zabbix-5.2.3.org/src/zabbix_java/lib/logback.xml	2020-12-14 11:27:17.000000000 +0100
++++ zabbix-5.2.3/src/zabbix_java/lib/logback.xml	2021-08-24 11:18:50.376675510 +0200
 @@ -2,10 +2,10 @@
  
  	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -110,8 +103,9 @@
  			<minIndex>1</minIndex>
  			<maxIndex>3</maxIndex>
  		</rollingPolicy>
---- zabbix-3.2.0.orig/src/zabbix_java/settings.sh	2016-09-13 14:20:55.000000000 +0200
-+++ zabbix-3.2.0/src/zabbix_java/settings.sh	2016-10-01 18:42:06.000000000 +0200
+diff -urNp -x '*.orig' zabbix-5.2.3.org/src/zabbix_java/settings.sh zabbix-5.2.3/src/zabbix_java/settings.sh
+--- zabbix-5.2.3.org/src/zabbix_java/settings.sh	2020-12-14 11:27:17.000000000 +0100
++++ zabbix-5.2.3/src/zabbix_java/settings.sh	2021-08-24 11:18:50.376675510 +0200
 @@ -24,7 +24,7 @@
  # Default:
  # PID_FILE=
@@ -121,3 +115,15 @@
  
  ### Option: zabbix.startPollers
  #	Number of worker threads to start.
+diff -urNp -x '*.orig' zabbix-5.2.3.org/ui/include/classes/setup/CSetupWizard.php zabbix-5.2.3/ui/include/classes/setup/CSetupWizard.php
+--- zabbix-5.2.3.org/ui/include/classes/setup/CSetupWizard.php	2020-12-21 10:47:57.000000000 +0100
++++ zabbix-5.2.3/ui/include/classes/setup/CSetupWizard.php	2021-08-24 11:18:50.376675510 +0200
+@@ -604,7 +604,7 @@ class CSetupWizard extends CForm {
+ 
+ 		$this->setConfig('ZBX_CONFIG_FILE_CORRECT', true);
+ 
+-		$config_file_name = APP::getInstance()->getRootDir().CConfigFile::CONFIG_FILE_PATH;
++		$config_file_name = '/etc/zabbix/frontend/zabbix.conf.php';
+ 		$config = new CConfigFile($config_file_name);
+ 		$config->config = [
+ 			'DB' => [
