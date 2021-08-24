@@ -34,6 +34,7 @@ Source7:	%{name}_agentd.init
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
+Patch3:		go-destdir.patch
 URL:		http://zabbix.sourceforge.net/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
@@ -293,10 +294,10 @@ This package provides the Zabbix Java Gateway.
 
 %prep
 %setup -q
-
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
