@@ -10,7 +10,7 @@
 %bcond_without	sqlite3	# enable sqlite3 support
 %bcond_without	mysql	# enable MySQL support
 %bcond_without	java	# disable java support
-%bcond_with	agent2	# disable bulding of Go based agent2
+%bcond_without	agent2	# disable bulding of Go based agent2
 
 %define databases %{?with_sqlite3:sqlite3} %{?with_pgsql:postgresql} %{?with_mysql:mysql}
 %define any_database %{with pgsql}%{with mysql}%{with sqlite3}
