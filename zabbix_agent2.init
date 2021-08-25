@@ -1,0 +1,98 @@
+#!/bin/sh
+#
+# Starts the zabbix_agent2 daemon
+#
+# chkconfig:	345 95 5
+#
+# description:	zabbix_agent2 long service description
+#
+# processname:	zabbix_agent2
+# processname: zabbix_agent2
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down "Zabbix Agent2"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+ZABBIX_USER=zabbix
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/zabbix_agent2 ] && . /etc/sysconfig/zabbix_agent2
+
+pidfile="/var/run/zabbix/zabbix_agent2.pid"
+
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/zabbix_agent2 ]; then
+		msg_already_running "Zabbix Agent2"
+		return
+	fi
+
+	msg_starting "Zabbix Agent2"
+	daemon --fork --user $ZABBIX_USER /usr/sbin/zabbix_agent2
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/zabbix_agent2
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/zabbix_agent2 ]; then
+		msg_not_running "Zabbix Agent2"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "Zabbix Agent2"
+	killproc --pidfile $pidfile zabbix_agent2 -TERM
+	rm -f /var/lock/subsys/zabbix_agent2
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/zabbix_agent2 ]; then
+		msg_not_running "Zabbix Agent2"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
+  status)
+	status --pidfile $pidfile zabbix_agent2
+	RETVAL=$?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL

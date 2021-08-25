@@ -30,6 +30,8 @@ Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
 Source0:	https://cdn.zabbix.com/zabbix/sources/stable/5.4/%{name}-%{version}.tar.gz
 # Source0-md5:	5dccb536c164e45c7d5c1a5a9d64be43
+Source100:	go-vendor.tar.xz
+# Source100-md5:	61f2ee9647280765b622a5e1e8cdfbba
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -37,13 +39,12 @@ Source4:	%{name}_proxy.service
 Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
 Source7:	%{name}_agentd.init
+Source8:	%{name}_agent2.init
 %if 0
 cd src/go/
 go mod vendor
 tar -caf ~/go-vendor.tar.xz -C ../../ src/go/vendor
 %endif
-Source8:	go-vendor.tar.xz
-# Source8-md5:	61f2ee9647280765b622a5e1e8cdfbba
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
@@ -145,6 +146,8 @@ Summary:	Zabbix Agent 2
 Group:		Networking/Utilities
 URL:		https://www.zabbix.com/documentation/current/manual/concepts/agent2
 Requires:	%{name}-common = %{version}-%{release}
+Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 
 %description agent2
 Zabbix agent 2 is a new generation of Zabbix agent and may be used in
@@ -335,7 +338,7 @@ Requires:	systemd-units >= 38
 This package provides the Zabbix Java Gateway.
 
 %prep
-%setup -q -a8
+%setup -q -a100
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -437,6 +440,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 install	%{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_server.service
 install	%{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agentd.service
 install	%{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agentd
+install	%{SOURCE8} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agent2
 install	%{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_proxy.service
 install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service
 
@@ -551,6 +555,16 @@ fi
 
 %postun agentd
 %systemd_reload
+
+%post agent2
+/sbin/chkconfig --add zabbix_agent2
+%service zabbix_agent2 restart
+
+%preun agent2
+if [ "$1" = "0" ]; then
+	%service -q zabbix_agent2 stop
+	/sbin/chkconfig --del zabbix_agent2
+fi
 
 %post proxy-mysql
 ln -sf zabbix_proxy-mysql %{_sbindir}/zabbix_proxy || :
