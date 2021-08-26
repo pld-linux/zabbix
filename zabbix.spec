@@ -24,7 +24,7 @@ Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	5.4.3
-Release:	0.7
+Release:	0.8
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
@@ -623,6 +623,7 @@ ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent2.conf
 %dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_agent2.conf.d
+%attr(754,root,root) /etc/rc.d/init.d/zabbix_agent2
 %attr(755,root,root) %{_sbindir}/zabbix_agent2
 %{_mandir}/man8/zabbix_agent2.8*
 %endif
