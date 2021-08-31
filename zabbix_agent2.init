@@ -29,7 +29,17 @@ ZABBIX_USER=zabbix
 # Get service config - may override defaults
 [ -f /etc/sysconfig/zabbix_agent2 ] && . /etc/sysconfig/zabbix_agent2
 
-pidfile="/var/run/zabbix/zabbix_agent2.pid"
+# Try to get configured PidFile or set default
+get_pid() {
+	local config="$1"
+	local pidfile
+	test -f "$config" && pidfile=$(awk -F= '/^ *PidFile/ {print $2}' "$config")
+	# Fallback to zabbix_agent2 default pidfile
+	test -n "$pidfile" || pidfile=/tmp/zabbix_agent2.pid
+	echo "$pidfile"
+}
+
+pidfile=$(get_pid /etc/zabbix/zabbix_agent2.conf)
 
 start() {
 	# Check if the service is already running?
