@@ -19,6 +19,8 @@
 %undefine	with_agent2
 %endif
 
+%{?with_java:%{?use_default_jdk}}
+
 %define		php_min_version 7.2.5
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
@@ -56,7 +58,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.15
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
-%{?with_java:BuildRequires:	jdk}
+%{?with_java:%{?use_jdk:%buildrequires_jdk}%{!?use_jdk:BuildRequires:	jdk}}
 BuildRequires:	rpm-build >= 4.6
 %{?with_java:BuildRequires:	rpm-pld-macros-javaprov}
 %{?with_agent2:BuildRequires:	golang >= 1.13}
@@ -70,7 +72,7 @@ BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	rpmbuild(macros) >= 2.009
+BuildRequires:	rpmbuild(macros) >= 2.021
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	unixODBC-devel
@@ -357,6 +359,8 @@ This package provides the Zabbix Java Gateway.
 
 configure() {
 	%configure \
+	%{?with_java:ac_cv_prog_JAVAC=%{java_home}/bin/javac} \
+	%{?with_java:ac_cv_prog_JAR=%{java_home}/bin/jar} \
 	--enable-dependency-tracking \
 	--enable-agent \
 	%{__enable_disable agent2} \
