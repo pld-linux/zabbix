@@ -72,7 +72,9 @@ BuildRequires:	pcre-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 2.009
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	unixODBC-devel
+BuildRequires:	xz
 BuildRequires:	zlib-devel
 Requires:	%{name}-agentd = %{version}-%{release}
 Requires:	%{name}-frontend-php = %{version}-%{release}
