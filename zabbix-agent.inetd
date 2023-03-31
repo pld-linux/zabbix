@@ -1,8 +1,0 @@
-SERVICE_NAME=zabbix-agent
-SOCK_TYPE=stream
-PROTOCOL=tcp
-PORT=10000
-FLAGS=nowait
-USER=zabbix
-SERVER=tcpd
-DAEMON=/usr/sbin/zabbix_agent
