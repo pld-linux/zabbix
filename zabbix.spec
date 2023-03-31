@@ -57,6 +57,7 @@ BuildRequires:	automake >= 1:1.15
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
 %{?with_java:BuildRequires:	jdk}
+BuildRequires:	rpm-build >= 4.6
 %{?with_java:BuildRequires:	rpm-pld-macros-javaprov}
 %{?with_agent2:BuildRequires:	golang >= 1.13}
 BuildRequires:	libevent-devel
