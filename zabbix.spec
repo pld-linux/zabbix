@@ -15,7 +15,7 @@
 %define databases %{?with_sqlite3:sqlite3} %{?with_pgsql:postgresql} %{?with_mysql:mysql}
 %define any_database %{with pgsql}%{with mysql}%{with sqlite3}
 
-%ifnarch %{ix86} %{x8664}
+%ifnarch %{go_arches}
 %undefine	with_agent2
 %endif
 
@@ -69,7 +69,7 @@ BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	rpmbuild(macros) >= 1.671
+BuildRequires:	rpmbuild(macros) >= 2.009
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	unixODBC-devel
 BuildRequires:	zlib-devel
