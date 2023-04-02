@@ -532,10 +532,10 @@ if [ "$1" = 1 ]; then
 	Running these should be fine in most cases:
 
 	createuser zabbix
-	createdb -O zabbix zabbix
-	zcat %{_docdir}/%{name}-server-postgresql-%{version}/schema.sql.gz | psql -u zabbix zabbix
-	zcat %{_docdir}/%{name}-server-postgresql-%{version}/images.sql.gz | psql -u zabbix zabbix
-	zcat %{_docdir}/%{name}-server-postgresql-%{version}/data.sql.gz | psql -u zabbix zabbix
+	createdb -O zabbix -E utf8 -T template0 zabbix
+	zcat %{_docdir}/%{name}-server-postgresql-%{version}/schema.sql.gz | psql -U zabbix zabbix
+	zcat %{_docdir}/%{name}-server-postgresql-%{version}/images.sql.gz | psql -U zabbix zabbix
+	zcat %{_docdir}/%{name}-server-postgresql-%{version}/data.sql.gz | psql -U zabbix zabbix
 EOF
 fi
 ln -sf zabbix_server-postgresql %{_sbindir}/zabbix_server || :
