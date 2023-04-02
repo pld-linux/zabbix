@@ -41,6 +41,7 @@ Source5:	%{name}_java.service
 Source6:	%{name}.tmpfiles
 Source7:	%{name}_agentd.init
 Source8:	%{name}_agent2.init
+Source9:	%{name}_agent2.service
 %if 0
 cd src/go/
 go mod vendor
@@ -447,6 +448,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 
 install	%{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_server.service
 install	%{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agentd.service
+install	%{SOURCE9} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agent2.service
 install	%{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agentd
 install	%{SOURCE8} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agent2
 install	%{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_proxy.service
@@ -493,6 +495,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %triggerun frontend-php -- apache < 2.2.0, apache-base
 %webapp_unregister httpd %{_webapp}
+
+%triggerpostun agent2 -- zabbix-agent2 < 6.0.15
+%systemd_trigger zabbix_agent2.service
 
 %pre common
 %groupadd -g 111 zabbix
@@ -567,12 +572,14 @@ fi
 %post agent2
 /sbin/chkconfig --add zabbix_agent2
 %service zabbix_agent2 restart
+%systemd_post zabbix_agent2.service
 
 %preun agent2
 if [ "$1" = "0" ]; then
 	%service -q zabbix_agent2 stop
 	/sbin/chkconfig --del zabbix_agent2
 fi
+%systemd_preun zabbix_agent2.service
 
 %post proxy-mysql
 ln -sf zabbix_proxy-mysql %{_sbindir}/zabbix_proxy || :
@@ -636,6 +643,7 @@ ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %attr(754,root,root) /etc/rc.d/init.d/zabbix_agent2
 %attr(755,root,root) %{_sbindir}/zabbix_agent2
 %{_mandir}/man8/zabbix_agent2.8*
+%{systemdunitdir}/zabbix_agent2.service
 %endif
 
 %files frontend-php
