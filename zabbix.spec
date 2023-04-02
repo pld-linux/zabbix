@@ -88,6 +88,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_webapps	/etc/webapps
 %define		_webapp		%{name}
 
+%if %{defined __compress_doc}
+%define		doc_cat		zcat
+%define		doc_suffix	.gz
+%else
+%define		doc_cat		cat
+%define		doc_suffix	%{nil}
+%endif
+
 %description
 Zabbix is software that monitors numerous parameters of a network and
 the servers on that network. It is a useful tool for monitoring the
@@ -517,9 +525,9 @@ if [ "$1" = 1 ]; then
 
 	Running these should be fine in most cases:
 	mysqladmin create zabbix
-	zcat %{_docdir}/%{name}-server-mysql-%{version}/schema.sql.gz | mysql zabbix
-	zcat %{_docdir}/%{name}-server-mysql-%{version}/images.sql.gz | mysql zabbix
-	zcat %{_docdir}/%{name}-server-mysql-%{version}/data.sql.gz | mysql zabbix
+	%doc_cat %{_docdir}/%{name}-server-mysql-%{version}/schema.sql%{doc_suffix} | mysql zabbix
+	%doc_cat %{_docdir}/%{name}-server-mysql-%{version}/images.sql%{doc_suffix} | mysql zabbix
+	%doc_cat %{_docdir}/%{name}-server-mysql-%{version}/data.sql%{doc_suffix} | mysql zabbix
 EOF
 fi
 ln -sf zabbix_server-mysql %{_sbindir}/zabbix_server || :
@@ -533,9 +541,9 @@ if [ "$1" = 1 ]; then
 
 	createuser zabbix
 	createdb -O zabbix -E utf8 -T template0 zabbix
-	zcat %{_docdir}/%{name}-server-postgresql-%{version}/schema.sql.gz | psql -U zabbix zabbix
-	zcat %{_docdir}/%{name}-server-postgresql-%{version}/images.sql.gz | psql -U zabbix zabbix
-	zcat %{_docdir}/%{name}-server-postgresql-%{version}/data.sql.gz | psql -U zabbix zabbix
+	%doc_cat %{_docdir}/%{name}-server-postgresql-%{version}/schema.sql%{doc_suffix} | psql -U zabbix zabbix
+	%doc_cat %{_docdir}/%{name}-server-postgresql-%{version}/images.sql%{doc_suffix} | psql -U zabbix zabbix
+	%doc_cat %{_docdir}/%{name}-server-postgresql-%{version}/data.sql%{doc_suffix} | psql -U zabbix zabbix
 EOF
 fi
 ln -sf zabbix_server-postgresql %{_sbindir}/zabbix_server || :
