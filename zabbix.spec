@@ -24,15 +24,15 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	5.4.3
-Release:	3
+Version:	6.0.15
+Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
-Source0:	https://cdn.zabbix.com/zabbix/sources/stable/5.4/%{name}-%{version}.tar.gz
-# Source0-md5:	5dccb536c164e45c7d5c1a5a9d64be43
+Source0:	https://cdn.zabbix.com/zabbix/sources/stable/6.0/%{name}-%{version}.tar.gz
+# Source0-md5:	54712b943e39287ed47a5118edff295b
 Source100:	go-vendor.tar.xz
-# Source100-md5:	61f2ee9647280765b622a5e1e8cdfbba
+# Source100-md5:	e8ffa2ed45f01a1c1df2545c1efa7917
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -412,7 +412,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/zabbix_agent2.conf.d,/etc/webapps/%{_webapp}} \
+	$RPM_BUILD_ROOT/etc/webapps/%{_webapp} \
 	$RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_appdir}/frontends/php} \
 	$RPM_BUILD_ROOT{/var/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
 
@@ -629,7 +629,9 @@ ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 %files agent2
 %defattr(644,root,root,755)
 %attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent2.conf
-%dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_agent2.conf.d
+%dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_agent2.d
+%dir %attr(751,root,zabbix) %{_sysconfdir}/zabbix_agent2.d/plugins.d
+%attr(640,root,zabbix) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zabbix_agent2.d/plugins.d/*.conf
 %attr(754,root,root) /etc/rc.d/init.d/zabbix_agent2
 %attr(755,root,root) %{_sbindir}/zabbix_agent2
 %{_mandir}/man8/zabbix_agent2.8*
