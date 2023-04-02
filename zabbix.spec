@@ -1,7 +1,6 @@
 # TODO:
 # - initscript for zabbix-server, zabbix-proxy and zabbix-java
 # - unpackaged files:
-#   /lib/systemd/system/zabbix_java.service
 #   /usr/bin/zabbix_js
 #   /var/lib/zabbix/zabbix.db
 #
@@ -450,7 +449,7 @@ install	%{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_agentd.service
 install	%{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agentd
 install	%{SOURCE8} $RPM_BUILD_ROOT/etc/rc.d/init.d/zabbix_agent2
 install	%{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_proxy.service
-install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service
+%{?with_java:install	%{SOURCE5} $RPM_BUILD_ROOT%{systemdunitdir}/zabbix_java.service}
 
 cp -p %{SOURCE6} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/zabbix.conf
 
