@@ -6,6 +6,8 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/sbin/zabbix_agent2 -f
+User=zabbix
+Group=zabbix
 
 [Install]
 WantedBy=multi-user.target
