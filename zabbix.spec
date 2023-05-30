@@ -32,7 +32,7 @@ Group:		Networking/Utilities
 Source0:	https://cdn.zabbix.com/zabbix/sources/stable/6.0/%{name}-%{version}.tar.gz
 # Source0-md5:	f9e1a26ad0efd2113185d4f20438115e
 Source100:	go-vendor.tar.xz
-# Source100-md5:	d8066694cdc04c5d1f42c53ea7a881f2
+# Source100-md5:	5370a62ef1c14f1d386ca87ae28b5ece
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
