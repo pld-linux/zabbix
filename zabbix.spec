@@ -58,7 +58,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.15
 BuildRequires:	curl-devel
 BuildRequires:	iksemel-devel
-%{?with_java:%{?use_jdk:%buildrequires_jdk}%{!?use_jdk:BuildRequires:	jdk}}
+%{?with_java:%buildrequires_jdk}
 BuildRequires:	rpm-build >= 4.6
 %{?with_java:BuildRequires:	rpm-pld-macros-javaprov}
 %{?with_agent2:BuildRequires:	golang >= 1.13}
