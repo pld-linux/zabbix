@@ -52,6 +52,7 @@ Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
 Patch3:		go-destdir.patch
 Patch4:		go-vendor.patch
+Patch5:		missing-includes.patch
 URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
@@ -360,6 +361,7 @@ This package provides the Zabbix Java Gateway.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 %{__libtoolize}

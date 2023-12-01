@@ -1,0 +1,10 @@
+--- zabbix-6.0.23/src/libs/zbxxml/xml.c.orig	2023-10-31 07:26:29.368117699 +0100
++++ zabbix-6.0.23/src/libs/zbxxml/xml.c	2023-12-01 12:41:09.132402761 +0100
+@@ -23,6 +23,7 @@
+ #include "zbxvariant.h"
+ 
+ #ifdef HAVE_LIBXML2
++#	include <libxml/parser.h>
+ #	include <libxml/xpath.h>
+ #endif
+ 
