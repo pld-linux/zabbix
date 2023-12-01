@@ -1,7 +1,7 @@
 --- zabbix-6.0.15/src/go/Makefile.am.orig	2023-04-02 01:39:06.004592284 +0200
 +++ zabbix-6.0.15/src/go/Makefile.am	2023-04-02 01:40:27.811983809 +0200
 @@ -61,7 +61,7 @@
- 	rm -f bin/zabbix_agent2 bin/mock_server
+ 	-rm -f sbom-zws.xml
  
  install-zabbix.com/cmd/zabbix_agent2:
 -	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=${GOBIN} \
