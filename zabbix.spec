@@ -24,15 +24,15 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	6.0.25
+Version:	6.0.26
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
 Source0:	https://cdn.zabbix.com/zabbix/sources/stable/6.0/%{name}-%{version}.tar.gz
-# Source0-md5:	510cb7207048414b71b4fecc9aa50b6b
+# Source0-md5:	3ee357a14afb2e91bdc79dd1987fbd02
 Source100:	go-vendor.tar.xz
-# Source100-md5:	22eafc9b81337611071a24a7d1d582fa
+# Source100-md5:	beaab3eef0ef5bfabddaac14ab59fad8
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -52,7 +52,6 @@ Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
 Patch3:		go-destdir.patch
 Patch4:		go-vendor.patch
-Patch5:		missing-includes.patch
 URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
@@ -361,7 +360,6 @@ This package provides the Zabbix Java Gateway.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 
 %build
 %{__libtoolize}
