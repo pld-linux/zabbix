@@ -3,7 +3,7 @@
 @@ -61,7 +61,7 @@
  	-rm -f sbom-zws.xml
  
- install-zabbix.com/cmd/zabbix_agent2:
+ install-golang.zabbix.com/agent2/cmd/zabbix_agent2:
 -	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=${GOBIN} \
 +	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=$(DESTDIR)${GOBIN} \
  		go install -ldflags="${AGENT_GOLDFLAGS}" ${TARGETS}
@@ -12,9 +12,9 @@
 @@ -71,7 +71,7 @@
  	done
  
- install-zabbix.com/cmd/zabbix_web_service:
--	GOBIN=${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
-+	GOBIN=$(DESTDIR)${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
+ install-golang.zabbix.com/agent2/cmd/zabbix_web_service:
+-	GOBIN=${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" golang.zabbix.com/agent2/cmd/zabbix_web_service
++	GOBIN=$(DESTDIR)${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" golang.zabbix.com/agent2/cmd/zabbix_web_service
  
  install-exec-local: ${INSTALL_TARGETS}
  

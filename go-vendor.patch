@@ -3,19 +3,19 @@
 @@ -49,10 +49,10 @@
  all: build
  
- zabbix.com/cmd/zabbix_agent2:
--	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -tags="${AGENT_GOTAGS}" -ldflags="${AGENT_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_agent2
-+	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -mod=vendor -tags="${AGENT_GOTAGS}" -ldflags="${AGENT_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_agent2
+ golang.zabbix.com/agent2/cmd/zabbix_agent2:
+-	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -tags="${AGENT_GOTAGS}" -ldflags="${AGENT_GOLDFLAGS}" -o bin golang.zabbix.com/agent2/cmd/zabbix_agent2
++	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" go build -mod=vendor -tags="${AGENT_GOTAGS}" -ldflags="${AGENT_GOLDFLAGS}" -o bin golang.zabbix.com/agent2/cmd/zabbix_agent2
  
- zabbix.com/cmd/zabbix_web_service:
--	go build -ldflags="${WEBSERVICE_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_web_service
-+	go build -mod=vendor -ldflags="${WEBSERVICE_GOLDFLAGS}" -o bin zabbix.com/cmd/zabbix_web_service
+ golang.zabbix.com/agent2/cmd/zabbix_web_service:
+-	go build -ldflags="${WEBSERVICE_GOLDFLAGS}" -o bin golang.zabbix.com/agent2/cmd/zabbix_web_service
++	go build -mod=vendor -ldflags="${WEBSERVICE_GOLDFLAGS}" -o bin golang.zabbix.com/agent2/cmd/zabbix_web_service
  
  build: ${TARGETS}
  
 @@ -62,7 +62,7 @@
  
- install-zabbix.com/cmd/zabbix_agent2:
+ install-golang.zabbix.com/agent2/cmd/zabbix_agent2:
  	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" GOBIN=$(DESTDIR)${GOBIN} \
 -		go install -ldflags="${AGENT_GOLDFLAGS}" ${TARGETS}
 +		go install -mod=vendor -ldflags="${AGENT_GOLDFLAGS}" ${TARGETS}
@@ -25,9 +25,9 @@
 @@ -71,7 +71,7 @@
  	done
  
- install-zabbix.com/cmd/zabbix_web_service:
--	GOBIN=$(DESTDIR)${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
-+	GOBIN=$(DESTDIR)${GOBIN} go install -mod=vendor -ldflags="${WEBSERVICE_GOLDFLAGS}" zabbix.com/cmd/zabbix_web_service
+ install-golang.zabbix.com/agent2/cmd/zabbix_web_service:
+-	GOBIN=$(DESTDIR)${GOBIN} go install -ldflags="${WEBSERVICE_GOLDFLAGS}" golang.zabbix.com/agent2/cmd/zabbix_web_service
++	GOBIN=$(DESTDIR)${GOBIN} go install -mod=vendor -ldflags="${WEBSERVICE_GOLDFLAGS}" golang.zabbix.com/agent2/cmd/zabbix_web_service
  
  install-exec-local: ${INSTALL_TARGETS}
  
