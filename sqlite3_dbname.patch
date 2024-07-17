@@ -20,9 +20,9 @@ diff -urNp -x '*.orig' zabbix-5.2.3.org/src/libs/zbxdb/db.c zabbix-5.2.3/src/lib
  
  #ifndef HAVE_MYSQL
 @@ -830,6 +831,10 @@ out:
- 	ZBX_UNUSED(ca);
  	ZBX_UNUSED(cipher);
  	ZBX_UNUSED(cipher_13);
+ 	ZBX_UNUSED(read_only_recoverable);
 +	if (!strchr(dbname, '/') && !strchr(dbname, ':')) {
 +		zbx_snprintf(dbname_buf, sizeof(dbname_buf), "/var/lib/zabbix/%s.db", dbname);
 +		dbname = dbname_buf;
