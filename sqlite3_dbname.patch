@@ -8,25 +8,39 @@
  #	If the Net Service Name connection method is used to connect to Oracle database, specify the service name from
  #	the tnsnames.ora file or set to empty string; also see the TWO_TASK environment variable if DBName is set to
  #	empty string.
-diff -urNp -x '*.orig' zabbix-5.2.3.org/src/libs/zbxdb/db.c zabbix-5.2.3/src/libs/zbxdb/db.c
---- zabbix-5.2.3.org/src/libs/zbxdb/db.c	2020-12-14 11:27:17.000000000 +0100
-+++ zabbix-5.2.3/src/libs/zbxdb/db.c	2021-08-24 11:18:52.356778296 +0200
-@@ -383,6 +383,7 @@ int	zbx_db_connect(char *host, char *use
+--- zabbix-7.0.3/src/libs/zbxdb/db.c.orig	2024-08-22 14:35:46.382451647 +0200
++++ zabbix-7.0.3/src/libs/zbxdb/db.c	2024-08-22 15:08:36.432915877 +0200
+@@ -437,6 +437,7 @@ int	zbx_db_connect_basic(const zbx_confi
  	unsigned int	i = 0;
  #elif defined(HAVE_SQLITE3)
  	char		*p, *path = NULL;
-+	char		dbname_buf[1024];
++	char		*dbpath = NULL;
  #endif
  
- #ifndef HAVE_MYSQL
-@@ -830,6 +831,10 @@ out:
- 	ZBX_UNUSED(cipher);
- 	ZBX_UNUSED(cipher_13);
- 	ZBX_UNUSED(read_only_recoverable);
-+	if (!strchr(dbname, '/') && !strchr(dbname, ':')) {
-+		zbx_snprintf(dbname_buf, sizeof(dbname_buf), "/var/lib/zabbix/%s.db", dbname);
-+		dbname = dbname_buf;
+ 	/* Allow executing statements during a connection initialization. Make sure to mark transaction as failed. */
+@@ -851,10 +852,15 @@ int	zbx_db_connect_basic(const zbx_confi
+ 	ZBX_PG_READ_ONLY_RECOVERABLE = cfg->read_only_recoverable;
+ out:
+ #elif defined(HAVE_SQLITE3)
++	if (!strchr(cfg->config_dbname, '/') && !strchr(cfg->config_dbname, ':')) {
++		dbpath = zbx_dsprintf(NULL, "/var/lib/zabbix/%s.db", cfg->config_dbname);
++	} else {
++		dbpath = strdup(cfg->config_dbname);
 +	}
  #ifdef HAVE_FUNCTION_SQLITE3_OPEN_V2
- 	if (SQLITE_OK != sqlite3_open_v2(dbname, &conn, SQLITE_OPEN_READWRITE, NULL))
+-	if (SQLITE_OK != sqlite3_open_v2(cfg->config_dbname, &conn, SQLITE_OPEN_READWRITE, NULL))
++	if (SQLITE_OK != sqlite3_open_v2(dbpath, &conn, SQLITE_OPEN_READWRITE, NULL))
  #else
+-	if (SQLITE_OK != sqlite3_open(cfg->config_dbname, &conn))
++	if (SQLITE_OK != sqlite3_open(dbpath, &conn))
+ #endif
+ 	{
+ 		zbx_db_errlog(ERR_Z3001, 0, sqlite3_errmsg(conn), cfg->config_dbname);
+@@ -895,6 +901,7 @@ out:
+ 
+ 	zbx_free(path);
+ out:
++	free(dbpath);
+ #endif	/* HAVE_SQLITE3 */
+ 	if (ZBX_DB_OK != ret)
+ 		zbx_db_close_basic();

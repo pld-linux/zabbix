@@ -122,7 +122,7 @@ diff -urNp -x '*.orig' zabbix-5.2.3.org/ui/include/classes/setup/CSetupWizard.ph
  
  		$this->setConfig('ZBX_CONFIG_FILE_CORRECT', true);
  
--		$config_file_name = APP::getInstance()->getRootDir().CConfigFile::CONFIG_FILE_PATH;
+-		$config_file_name = APP::getRootDir().CConfigFile::CONFIG_FILE_PATH;
 +		$config_file_name = '/etc/zabbix/frontend/zabbix.conf.php';
  		$config = new CConfigFile($config_file_name);
  		$config->config = [

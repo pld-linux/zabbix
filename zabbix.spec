@@ -24,15 +24,15 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	6.0.33
+Version:	7.0.3
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
-Source0:	https://cdn.zabbix.com/zabbix/sources/stable/6.0/%{name}-%{version}.tar.gz
-# Source0-md5:	100fd4ef73de6918e65ea71166658521
+Source0:	https://cdn.zabbix.com/zabbix/sources/stable/7.0/%{name}-%{version}.tar.gz
+# Source0-md5:	94c2eb56bedc9bbf6056a16358065b11
 Source100:	go-vendor.tar.xz
-# Source100-md5:	22791de70b0fee7153fc13217f5a17fb
+# Source100-md5:	5a9271acf477fa5382f3970139495695
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
@@ -50,13 +50,12 @@ tar -caf ~/go-vendor.tar.xz -C ../../ src/go/vendor
 Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
-Patch3:		go-destdir.patch
-Patch4:		go-vendor.patch
+Patch3:		go-vendor.patch
 URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.15
-BuildRequires:	curl-devel
+BuildRequires:	curl-devel >= 7.19.1
 BuildRequires:	iksemel-devel
 %{?with_java:%buildrequires_jdk}
 BuildRequires:	rpm-build >= 4.6
@@ -69,7 +68,7 @@ BuildRequires:	libxml2-devel
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	net-snmp-devel
 BuildRequires:	openldap-devel >= 2.4.6
-BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-devel >= 1.1.0
 BuildRequires:	pcre-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	rpmbuild(macros) >= 2.021
@@ -149,6 +148,7 @@ Requires:	systemd-units >= 38
 Obsoletes:	zabbix-agent-inetd
 Obsoletes:	zabbix-agent-standalone
 Requires(post,preun):	/sbin/chkconfig
+Requires:	curl-libs >= 7.19.1
 Requires:	rc-scripts
 
 %description agentd
@@ -251,6 +251,7 @@ Ten pakiet zawiera proxy Zabbix.
 Summary:	MySQL support for Zabbix proxy
 Summary(pl.UTF-8):	Obsługa MySQL dla proxy do Zabbiksa
 Group:		Networking/Utilities
+Requires:	curl-libs >= 7.19.1
 Provides:	%{name}-proxy(db) = %{version}-%{release}
 Obsoletes:	zabbix-proxy-postgresql
 Obsoletes:	zabbix-proxy-sqlite3
@@ -265,6 +266,7 @@ Ten pakiet zawiera proxy Zabbix z obsługą MySQL.
 Summary:	PostgreSQL support for Zabbix proxy
 Summary(pl.UTF-8):	Obsługa PostgreSQL dla proxy do Zabbiksa
 Group:		Networking/Utilities
+Requires:	curl-libs >= 7.19.1
 Provides:	%{name}-proxy(db) = %{version}-%{release}
 Obsoletes:	zabbix-proxy-mysql
 Obsoletes:	zabbix-proxy-sqlite3
@@ -279,6 +281,7 @@ Ten pakiet zawiera proxy Zabbix z obsługą PostgreSQL.
 Summary:	SQLite 3 support for Zabbix proxy
 Summary(pl.UTF-8):	Obsługa SQLite 3 dla proxy do Zabbiksa
 Group:		Networking/Utilities
+Requires:	curl-libs >= 7.19.1
 Provides:	%{name}-proxy(db) = %{version}-%{release}
 Obsoletes:	zabbix-proxy-mysql
 Obsoletes:	zabbix-proxy-postgresql
@@ -321,6 +324,7 @@ Ten pakiet zawiera serwer Zabbiksa.
 Summary:	MySQL support for Zabbix server
 Summary(pl.UTF-8):	Obsługa MySQL sla serwera Zabbiksa
 Group:		Networking/Utilities
+Requires:	curl-libs >= 7.19.1
 Provides:	%{name}-server(db) = %{version}-%{release}
 Obsoletes:	zabbix-server-postgresql
 Obsoletes:	zabbix-server-sqlite3
@@ -336,6 +340,7 @@ Ten pakiet zawiera serwer Zabbiksa z obsługą bazy danych MySQL.
 Summary:	PostgreSQL support for Zabbix server
 Summary(pl.UTF-8):	Obsługa PostgreSQL sla serwera Zabbiksa
 Group:		Networking/Utilities
+Requires:	curl-libs >= 7.19.1
 Provides:	%{name}-server(db) = %{version}-%{release}
 Obsoletes:	zabbix-server-mysql
 Obsoletes:	zabbix-server-sqlite3
@@ -362,7 +367,6 @@ This package provides the Zabbix Java Gateway.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %build
 %{__libtoolize}
