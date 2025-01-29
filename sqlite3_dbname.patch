@@ -18,7 +18,7 @@
  #endif
  
  	/* Allow executing statements during a connection initialization. Make sure to mark transaction as failed. */
-@@ -851,10 +852,15 @@ int	zbx_db_connect_basic(const zbx_confi
+@@ -851,11 +852,16 @@ int	zbx_db_connect_basic(const zbx_confi
  	ZBX_PG_READ_ONLY_RECOVERABLE = cfg->read_only_recoverable;
  out:
  #elif defined(HAVE_SQLITE3)
@@ -28,8 +28,9 @@
 +		dbpath = strdup(cfg->config_dbname);
 +	}
  #ifdef HAVE_FUNCTION_SQLITE3_OPEN_V2
--	if (SQLITE_OK != sqlite3_open_v2(cfg->config_dbname, &conn, SQLITE_OPEN_READWRITE, NULL))
-+	if (SQLITE_OK != sqlite3_open_v2(dbpath, &conn, SQLITE_OPEN_READWRITE, NULL))
+-	if (SQLITE_OK != sqlite3_open_v2(cfg->config_dbname, &conn, SQLITE_OPEN_READWRITE |
++	if (SQLITE_OK != sqlite3_open_v2(dbpath, &conn, SQLITE_OPEN_READWRITE |
+ 		SQLITE_OPEN_CREATE, NULL))
  #else
 -	if (SQLITE_OK != sqlite3_open(cfg->config_dbname, &conn))
 +	if (SQLITE_OK != sqlite3_open(dbpath, &conn))
