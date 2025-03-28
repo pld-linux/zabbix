@@ -24,13 +24,13 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	7.0.10
+Version:	7.0.11
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
 Source0:	https://cdn.zabbix.com/zabbix/sources/stable/7.0/%{name}-%{version}.tar.gz
-# Source0-md5:	06c3307cb52db5d3f97952685060b096
+# Source0-md5:	c6948c5b5d8f81fc7633b633b02851d7
 Source100:	go-vendor.tar.xz
 # Source100-md5:	cdd93168561663514facd206c23b1460
 Source1:	%{name}-apache.conf
@@ -55,6 +55,7 @@ URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.15
+BuildRequires:	c-ares-devel
 BuildRequires:	curl-devel >= 7.19.1
 BuildRequires:	iksemel-devel
 %{?with_java:%buildrequires_jdk}
@@ -384,6 +385,7 @@ configure() {
 	%{__enable_disable agent2} \
 	--enable-ipv6 \
 	%{__enable_disable java} \
+	--with-ares \
 	--with-ldap \
 	--with-libcurl \
 	--with-libevent \
