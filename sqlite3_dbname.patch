@@ -19,7 +19,7 @@
  
  	/* Allow executing statements during a connection initialization. Make sure to mark transaction as failed. */
 @@ -851,11 +852,16 @@ int	zbx_db_connect_basic(const zbx_confi
- 	ZBX_PG_READ_ONLY_RECOVERABLE = cfg->read_only_recoverable;
+ 
  out:
  #elif defined(HAVE_SQLITE3)
 +	if (!strchr(cfg->config_dbname, '/') && !strchr(cfg->config_dbname, ':')) {
