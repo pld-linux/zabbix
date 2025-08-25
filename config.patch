@@ -18,15 +18,12 @@ diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_agentd.conf zabbix-5.2.3/con
  
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
-@@ -304,7 +305,7 @@ Hostname=Zabbix server
+@@ -546,4 +546,4 @@ Hostname=Zabbix server
  
  # Include=/usr/local/etc/zabbix_agentd.userparams.conf
  # Include=/usr/local/etc/zabbix_agentd.conf.d/
 -# Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
 +Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf
- 
- ####### USER-DEFINED MONITORED PARAMETERS #######
- 
 diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_proxy.conf zabbix-5.2.3/conf/zabbix_proxy.conf
 --- zabbix-5.2.3.org/conf/zabbix_proxy.conf	2020-12-21 10:47:57.000000000 +0100
 +++ zabbix-5.2.3/conf/zabbix_proxy.conf	2021-08-24 11:18:50.376675510 +0200
@@ -48,15 +45,12 @@ diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_proxy.conf zabbix-5.2.3/conf
  
  ### Option: SocketDir
  #	IPC socket directory.
-@@ -586,7 +586,7 @@ LogSlowQueries=3000
+@@ -1050,4 +1050,4 @@ StatsAllowedIP=127.0.0.1
  
  # Include=/usr/local/etc/zabbix_proxy.general.conf
  # Include=/usr/local/etc/zabbix_proxy.conf.d/
 -# Include=/usr/local/etc/zabbix_proxy.conf.d/*.conf
 +Include=/etc/zabbix/zabbix_proxy.conf.d/*.conf
- 
- ### Option: SSLCertLocation
- #	Location of SSL client certificates.
 diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_server.conf zabbix-5.2.3/conf/zabbix_server.conf
 --- zabbix-5.2.3.org/conf/zabbix_server.conf	2020-12-21 10:47:57.000000000 +0100
 +++ zabbix-5.2.3/conf/zabbix_server.conf	2021-08-24 11:18:50.376675510 +0200
@@ -78,15 +72,12 @@ diff -urNp -x '*.orig' zabbix-5.2.3.org/conf/zabbix_server.conf zabbix-5.2.3/con
  
  ### Option: SocketDir
  #	IPC socket directory.
-@@ -620,7 +620,7 @@ LogSlowQueries=3000
+@@ -1124,4 +1124,4 @@ EnableGlobalScripts=0
  
  # Include=/usr/local/etc/zabbix_server.general.conf
  # Include=/usr/local/etc/zabbix_server.conf.d/
 -# Include=/usr/local/etc/zabbix_server.conf.d/*.conf
 +Include=/etc/zabbix/zabbix_server.conf.d/*.conf
- 
- ### Option: SSLCertLocation
- #	Location of SSL client certificates.
 diff -urNp -x '*.orig' zabbix-5.2.3.org/src/zabbix_java/lib/logback.xml zabbix-5.2.3/src/zabbix_java/lib/logback.xml
 --- zabbix-5.2.3.org/src/zabbix_java/lib/logback.xml	2020-12-14 11:27:17.000000000 +0100
 +++ zabbix-5.2.3/src/zabbix_java/lib/logback.xml	2021-08-24 11:18:50.376675510 +0200
