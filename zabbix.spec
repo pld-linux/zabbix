@@ -53,6 +53,7 @@ Patch2:		always_compile_ipc.patch
 Patch3:		go-vendor.patch
 Patch4:		builddir.patch
 Patch5:		ZBX-27153.patch
+Patch6:		sha512-unaligned.patch
 URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
@@ -372,6 +373,7 @@ This package provides the Zabbix Java Gateway.
 %patch -P3 -p1
 %patch -P4 -p1
 %patch -P5 -p1
+%patch -P6 -p1
 
 %build
 %{__libtoolize}

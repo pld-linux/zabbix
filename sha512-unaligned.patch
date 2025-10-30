@@ -1,0 +1,82 @@
+--- zabbix-7.0.20/include/zbxcacheconfig.h.orig	2025-10-28 08:32:37.089787694 +0100
++++ zabbix-7.0.20/include/zbxcacheconfig.h	2025-10-30 20:38:52.698720790 +0100
+@@ -204,7 +204,7 @@
+ 	char			ssl_key_file_orig[ZBX_ITEM_SSL_KEY_FILE_LEN_MAX], *ssl_key_file;
+ 	char			ssl_key_password_orig[ZBX_ITEM_SSL_KEY_PASSWORD_LEN_MAX], *ssl_key_password;
+ 	zbx_vector_ptr_pair_t 	script_params;
+-	char			error_hash[ZBX_SHA512_BINARY_LENGTH];
++	char			error_hash[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 	unsigned char		*formula_bin;
+ 	int			snmp_max_repetitions;
+ 	unsigned char		preprocessing;
+@@ -233,7 +233,7 @@
+ 	zbx_uint64_t		valuemapid;
+ 	char			key_orig[ZBX_ITEM_KEY_LEN * ZBX_MAX_BYTES_IN_UTF8_CHAR + 1];
+ 	char			*units;
+-	char			error_hash[ZBX_SHA512_BINARY_LENGTH];
++	char			error_hash[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 	char			*history_period, *trends_period;
+ 	int			mtime;
+ 	int			history_sec;
+--- zabbix-7.0.20/include/zbxdbhigh.h.orig	2025-10-28 08:32:37.089787694 +0100
++++ zabbix-7.0.20/include/zbxdbhigh.h	2025-10-30 20:38:52.712053726 +0100
+@@ -752,7 +752,7 @@
+ 	unsigned char	state;
+ 	int		mtime;
+ 	const char	*error;
+-	char		error_hash[ZBX_SHA512_BINARY_LENGTH];
++	char		error_hash[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 
+ 	zbx_uint64_t	flags;
+ #define ZBX_FLAGS_ITEM_DIFF_UNSET			__UINT64_C(0x0000)
+--- zabbix-7.0.20/src/libs/zbxsnmptrapper/snmptrapper.c.orig	2025-10-28 08:32:37.169788306 +0100
++++ zabbix-7.0.20/src/libs/zbxsnmptrapper/snmptrapper.c	2025-10-30 20:38:52.718720194 +0100
+@@ -300,7 +300,7 @@
+ static void	db_update_snmp_id(const char *date, const char *trap)
+ {
+ 	time_t	timestamp;
+-	char	hash_bin[ZBX_SHA512_BINARY_LENGTH], hash_hex[ZBX_SHA512_HEX_LENGTH], *sql = NULL;
++	char	hash_bin[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t)))), hash_hex[ZBX_SHA512_HEX_LENGTH], *sql = NULL;
+ 	size_t	sql_alloc = 0, sql_offset = 0;
+ 
+ 	if (FAIL == zbx_iso8601_utc(date, &timestamp))
+@@ -364,7 +364,7 @@
+ 		}
+ 	}
+ 
+-	char	hash_bin[ZBX_SHA512_BINARY_LENGTH];
++	char	hash_bin[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 
+ 	get_trap_hash(trap, hash_bin);
+ 
+@@ -700,7 +700,7 @@
+ 
+ 			if (-1 != open_trap_file(config_snmptrap_file))
+ 			{
+-				char	snmp_id_bin[ZBX_SHA512_BINARY_LENGTH];
++				char	snmp_id_bin[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 				int	ret;
+ 
+ 				if (ZBX_SHA512_BINARY_LENGTH != (ret = zbx_hex2bin((const unsigned char *)snmp_id,
+--- zabbix-7.0.20/src/zabbix_server/cachehistory/cachehistory_server.c.orig	2025-10-28 08:32:37.185788428 +0100
++++ zabbix-7.0.20/src/zabbix_server/cachehistory/cachehistory_server.c	2025-10-30 20:38:52.732053130 +0100
+@@ -593,7 +593,7 @@
+ {
+ 	zbx_uint64_t	flags = 0;
+ 	const char	*item_error = NULL;
+-	char		error_hash[ZBX_SHA512_BINARY_LENGTH];
++	char		error_hash[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 	zbx_item_diff_t	*diff;
+ 
+ 	if (0 != (ZBX_DC_FLAG_META & h->flags))
+--- zabbix-7.0.20/src/libs/zbxcacheconfig/dbconfig.h.orig	2025-10-28 08:32:37.113787878 +0100
++++ zabbix-7.0.20/src/libs/zbxcacheconfig/dbconfig.h	2025-10-30 20:38:52.742052832 +0100
+@@ -286,7 +286,7 @@
+ 	zbx_uint64_t		valuemapid;
+ 	const char		*key;
+ 	const char		*port;
+-	char			error_hash[ZBX_SHA512_BINARY_LENGTH];
++	char			error_hash[ZBX_SHA512_BINARY_LENGTH] __attribute__((aligned(__alignof__(uint64_t))));
+ 	const char		*delay;
+ 	const char		*delay_ex;
+ 	const char		*history_period;
