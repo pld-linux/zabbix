@@ -51,6 +51,7 @@ Patch0:		config.patch
 Patch1:		sqlite3_dbname.patch
 Patch2:		always_compile_ipc.patch
 Patch3:		go-vendor.patch
+Patch4:		builddir.patch
 URL:		https://www.zabbix.com/
 BuildRequires:	OpenIPMI-devel
 BuildRequires:	autoconf
@@ -72,7 +73,7 @@ BuildRequires:	openldap-devel >= 2.4.6
 BuildRequires:	openssl-devel >= 1.1.0
 BuildRequires:	pcre-devel
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	rpmbuild(macros) >= 2.021
+BuildRequires:	rpmbuild(macros) >= 2.043
 %{?with_sqlite3:BuildRequires:	sqlite3-devel}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	unixODBC-devel
@@ -368,6 +369,7 @@ This package provides the Zabbix Java Gateway.
 %patch -P1 -p1
 %patch -P2 -p1
 %patch -P3 -p1
+%patch -P4 -p1
 
 %build
 %{__libtoolize}
@@ -376,9 +378,10 @@ This package provides the Zabbix Java Gateway.
 %{__autoheader}
 %{__automake}
 
+%define		configuredir	..
+
 configure() {
 	%configure \
-	--enable-dependency-tracking \
 	--enable-ipv6 \
 	--with-ares \
 	--with-ldap \
@@ -394,6 +397,8 @@ configure() {
 	"$@"
 }
 
+install -d build-agents
+cd build-agents
 configure \
 	%{?with_java:JAVAC=%{java_home}/bin/javac} \
 	%{?with_java:JAR=%{java_home}/bin/jar} \
@@ -404,8 +409,11 @@ configure \
 	--disable-proxy
 
 %{__make}
+cd ..
 
 for database in %{databases} ; do
+	install -d build-$database
+	cd build-$database
 	if [ "$database" = "sqlite3" ] ; then
 		enable_server=""
 	else
@@ -420,16 +428,7 @@ for database in %{databases} ; do
 		--disable-java
 
 	%{__make}
-
-	if [ "$enable_server" ] ; then
-		%{__make} install \
-			-C src/zabbix_server \
-			DESTDIR=$PWD/install-${database}
-	fi
-
-	%{__make} install \
-		-C src/zabbix_proxy \
-		DESTDIR=$PWD/install-${database}
+	cd ..
 done
 
 %install
@@ -439,17 +438,18 @@ install -d \
 	$RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_appdir}/frontends/php} \
 	$RPM_BUILD_ROOT{/var/run/zabbix,/var/log/zabbix,%{systemdunitdir},%{systemdtmpfilesdir}}
 
-%{__make} install \
+%{__make} -C build-agents install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	ZJG_DEST=$RPM_BUILD_ROOT%{_datadir}/zabbix_java
 
 for database in %{databases} ; do
+	%{__make} -C build-$database install \
+		DESTDIR=$RPM_BUILD_ROOT
+
 	if [ "$database" != "sqlite3" ] ; then
-		cp -p install-$database/%{_sbindir}/zabbix_server \
-			$RPM_BUILD_ROOT%{_sbindir}/zabbix_server-$database
+		%{__mv} $RPM_BUILD_ROOT%{_sbindir}/zabbix_server{,-$database}
 	fi
-	cp -p install-$database/%{_sbindir}/zabbix_proxy \
-		$RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy-$database
+	%{__mv} $RPM_BUILD_ROOT%{_sbindir}/zabbix_proxy{,-$database}
 done
 
 if [ -n "$database" ] ; then

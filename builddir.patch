@@ -1,0 +1,225 @@
+--- zabbix-7.0.20/configure.ac.orig	2025-10-28 08:32:39.701807634 +0100
++++ zabbix-7.0.20/configure.ac	2025-10-30 16:00:32.881049137 +0100
+@@ -24,7 +24,7 @@
+ 
+ AC_CONFIG_HEADERS(include/common/config.h)
+ 
+-AC_SUBST(DEFAULT_INCLUDES, ['-I$(top_srcdir)/include/common -I$(top_srcdir)/include'])
++AC_SUBST(DEFAULT_INCLUDES, ['-I$(top_srcdir)/include/common -I$(top_builddir)/include/common -I$(top_srcdir)/include'])
+ 
+ AC_CANONICAL_HOST
+ 
+@@ -1909,7 +1909,7 @@
+ fi
+ 
+ if test "x$agent2" = "xyes"; then
+-	CGO_CFLAGS="$TLS_CFLAGS $LIBPCRE_CFLAGS $LIBPCRE2_CFLAGS"
++	CGO_CFLAGS="-I\$(abs_top_builddir)/include/common $TLS_CFLAGS $LIBPCRE_CFLAGS $LIBPCRE2_CFLAGS"
+ 	CGO_LDFLAGS="$AGENT2_LDFLAGS $LD_START_GROUP \
+ 		\${abs_top_builddir}/src/libs/zbxalgo/libzbxalgo.a \
+ 		\${abs_top_builddir}/src/libs/zbxinterface/libzbxinterface.a \
+--- zabbix-7.0.20/src/zabbix_js/Makefile.am.orig	2025-10-27 14:55:59.257664974 +0100
++++ zabbix-7.0.20/src/zabbix_js/Makefile.am	2025-10-30 16:12:43.195582140 +0100
+@@ -5,30 +5,30 @@
+ zabbix_js_SOURCES = zabbix_js.c
+ 
+ zabbix_js_LDADD = \
+-	$(top_srcdir)/src/libs/zbxlog/libzbxlog.a \
+-	$(top_srcdir)/src/libs/zbxembed/libzbxembed.a \
+-	$(top_srcdir)/src/libs/zbxjson/libzbxjson.a \
+-	$(top_srcdir)/src/libs/zbxregexp/libzbxregexp.a \
+-	$(top_srcdir)/src/libs/zbxalgo/libzbxalgo.a \
+-	$(top_srcdir)/src/libs/zbxthreads/libzbxthreads.a \
+-	$(top_srcdir)/src/libs/zbxmutexs/libzbxmutexs.a \
+-	$(top_srcdir)/src/libs/zbxprof/libzbxprof.a \
+-	$(top_srcdir)/src/libs/zbxnix/libzbxnix.a \
+-	$(top_srcdir)/src/libs/zbxcomms/libzbxcomms.a \
+-	$(top_srcdir)/src/libs/zbxip/libzbxip.a \
+-	$(top_srcdir)/src/libs/zbxgetopt/libzbxgetopt.a \
+-	$(top_srcdir)/src/libs/zbxhash/libzbxhash.a \
+-	$(top_srcdir)/src/libs/zbxcrypto/libzbxcrypto.a \
+-	$(top_srcdir)/src/libs/zbxcompress/libzbxcompress.a \
+-	$(top_srcdir)/src/libs/zbxhttp/libzbxhttp.a \
+-	$(top_srcdir)/src/libs/zbxvariant/libzbxvariant.a \
+-	$(top_srcdir)/src/libs/zbxxml/libzbxxml.a \
+-	$(top_srcdir)/src/libs/zbxstr/libzbxstr.a \
+-	$(top_srcdir)/src/libs/zbxnum/libzbxnum.a \
+-	$(top_srcdir)/src/libs/zbxtime/libzbxtime.a \
+-	$(top_srcdir)/src/libs/zbxcommon/libzbxcommon.a \
+-	$(top_srcdir)/src/libs/zbxbincommon/libzbxbincommon.a \
+-	$(top_srcdir)/src/libs/zbxcurl/libzbxcurl.a
++	$(top_builddir)/src/libs/zbxlog/libzbxlog.a \
++	$(top_builddir)/src/libs/zbxembed/libzbxembed.a \
++	$(top_builddir)/src/libs/zbxjson/libzbxjson.a \
++	$(top_builddir)/src/libs/zbxregexp/libzbxregexp.a \
++	$(top_builddir)/src/libs/zbxalgo/libzbxalgo.a \
++	$(top_builddir)/src/libs/zbxthreads/libzbxthreads.a \
++	$(top_builddir)/src/libs/zbxmutexs/libzbxmutexs.a \
++	$(top_builddir)/src/libs/zbxprof/libzbxprof.a \
++	$(top_builddir)/src/libs/zbxnix/libzbxnix.a \
++	$(top_builddir)/src/libs/zbxcomms/libzbxcomms.a \
++	$(top_builddir)/src/libs/zbxip/libzbxip.a \
++	$(top_builddir)/src/libs/zbxgetopt/libzbxgetopt.a \
++	$(top_builddir)/src/libs/zbxhash/libzbxhash.a \
++	$(top_builddir)/src/libs/zbxcrypto/libzbxcrypto.a \
++	$(top_builddir)/src/libs/zbxcompress/libzbxcompress.a \
++	$(top_builddir)/src/libs/zbxhttp/libzbxhttp.a \
++	$(top_builddir)/src/libs/zbxvariant/libzbxvariant.a \
++	$(top_builddir)/src/libs/zbxxml/libzbxxml.a \
++	$(top_builddir)/src/libs/zbxstr/libzbxstr.a \
++	$(top_builddir)/src/libs/zbxnum/libzbxnum.a \
++	$(top_builddir)/src/libs/zbxtime/libzbxtime.a \
++	$(top_builddir)/src/libs/zbxcommon/libzbxcommon.a \
++	$(top_builddir)/src/libs/zbxbincommon/libzbxbincommon.a \
++	$(top_builddir)/src/libs/zbxcurl/libzbxcurl.a
+ 
+ zabbix_js_LDADD += @ZBXJS_LIBS@ $(LIBXML2_LIBS)
+ 
+--- zabbix-7.0.20/src/zabbix_server/Makefile.am.orig	2025-10-28 08:32:37.185788428 +0100
++++ zabbix-7.0.20/src/zabbix_server/Makefile.am	2025-10-30 16:19:35.916381687 +0100
+@@ -188,4 +188,4 @@
+ 	$(MKDIR_P) "$(DESTDIR)$(EXTERNAL_SCRIPTS_PATH)"
+ 	$(MKDIR_P) "$(DESTDIR)$(ALERT_SCRIPTS_PATH)"
+ 	$(MKDIR_P) "$(DESTDIR)$(LOAD_MODULE_PATH)"
+-	test -f "$(DESTDIR)$(SERVER_CONFIG_FILE)" || cp "../../conf/zabbix_server.conf" "$(DESTDIR)$(SERVER_CONFIG_FILE)"
++	test -f "$(DESTDIR)$(SERVER_CONFIG_FILE)" || cp "$(srcdir)/../../conf/zabbix_server.conf" "$(DESTDIR)$(SERVER_CONFIG_FILE)"
+--- zabbix-7.0.20/src/zabbix_agent/Makefile.am.orig	2025-10-27 14:55:59.241664859 +0100
++++ zabbix-7.0.20/src/zabbix_agent/Makefile.am	2025-10-30 16:24:54.900771905 +0100
+@@ -69,4 +69,4 @@
+ install-data-hook:
+ 	$(MKDIR_P) "$(DESTDIR)$(AGENT_CONFIG_FILE).d"
+ 	$(MKDIR_P) "$(DESTDIR)$(LOAD_MODULE_PATH)"
+-	test -f "$(DESTDIR)$(AGENT_CONFIG_FILE)" || cp "../../conf/zabbix_agentd.conf" "$(DESTDIR)$(AGENT_CONFIG_FILE)"
++	test -f "$(DESTDIR)$(AGENT_CONFIG_FILE)" || cp "$(srcdir)/../../conf/zabbix_agentd.conf" "$(DESTDIR)$(AGENT_CONFIG_FILE)"
+--- zabbix-7.0.20/src/zabbix_proxy/Makefile.am.orig	2025-10-28 08:32:37.181788396 +0100
++++ zabbix-7.0.20/src/zabbix_proxy/Makefile.am	2025-10-30 16:24:22.724982406 +0100
+@@ -152,4 +152,4 @@
+ 	$(MKDIR_P) "$(DESTDIR)$(PROXY_CONFIG_FILE).d"
+ 	$(MKDIR_P) "$(DESTDIR)$(EXTERNAL_SCRIPTS_PATH)"
+ 	$(MKDIR_P) "$(DESTDIR)$(LOAD_MODULE_PATH)"
+-	test -f "$(DESTDIR)$(PROXY_CONFIG_FILE)" || cp "../../conf/zabbix_proxy.conf" "$(DESTDIR)$(PROXY_CONFIG_FILE)"
++	test -f "$(DESTDIR)$(PROXY_CONFIG_FILE)" || cp "$(srcdir)/../../conf/zabbix_proxy.conf" "$(DESTDIR)$(PROXY_CONFIG_FILE)"
+--- zabbix-7.0.20/src/go/Makefile.am.orig	2025-10-30 20:43:14.732173269 +0100
++++ zabbix-7.0.20/src/go/Makefile.am	2025-10-30 21:00:54.131994777 +0100
+@@ -48,19 +48,23 @@
+ all: build
+ 
+ bin/zabbix_agent2: FORCE
++	$(MKDIR_P) bin
+ 	CGO_CFLAGS="${CGO_CFLAGS}" CGO_LDFLAGS="${CGO_LDFLAGS}" \
+ 		$(GO) build \
++		-C $(srcdir) \
+ 		-mod=vendor \
+ 		-tags="${AGENT_GOTAGS}" \
+ 		-ldflags="${AGENT_GOLDFLAGS}" \
+-		-o bin \
++		-o $(abs_builddir)/bin \
+ 		golang.zabbix.com/agent2/cmd/zabbix_agent2
+ 
+ bin/zabbix_web_service: FORCE
++	$(MKDIR_P) bin
+ 	$(GO) build \
++	-C $(srcdir) \
+ 	-mod=vendor \
+ 	-ldflags="${WEBSERVICE_GOLDFLAGS}" \
+-	-o bin \
++	-o $(abs_builddir)/bin \
+ 	golang.zabbix.com/agent2/cmd/zabbix_web_service
+ 
+ build: ${TARGETS}
+@@ -95,9 +95,9 @@
+ 	$(INSTALL) -d "$(DESTDIR)$(sbindir)"
+ 	$(INSTALL_PROGRAM) bin/zabbix_agent2 "$(DESTDIR)$(sbindir)"
+ 	$(INSTALL) -d "$(DESTDIR)$(AGENT2_PLUGIN_CONFIG_DIR)"
+-	$(INSTALL_DATA) conf/zabbix_agent2.conf "$(DESTDIR)$(sysconfdir)"
++	$(INSTALL_DATA) $(srcdir)/conf/zabbix_agent2.conf "$(DESTDIR)$(sysconfdir)"
+ 	$(INSTALL) -d "$(DESTDIR)$(AGENT2_PLUGIN_CONFIG_DIR)"
+-	(cd conf/zabbix_agent2.d/plugins.d && \
++	(cd $(srcdir)/conf/zabbix_agent2.d/plugins.d && \
+ 	for _f in *.conf; do \
+ 		$(INSTALL_DATA) $${_f} "$(DESTDIR)$(AGENT2_PLUGIN_CONFIG_DIR)"; \
+ 	done)
+--- zabbix-7.0.20/src/go/pkg/zbxlib/globals_linux.go.orig	2025-10-28 08:32:37.097787756 +0100
++++ zabbix-7.0.20/src/go/pkg/zbxlib/globals_linux.go	2025-10-30 23:13:52.195425445 +0100
+@@ -17,34 +17,6 @@
+ /* cspell:disable */
+ 
+ /*
+-#cgo LDFLAGS: -Wl,--start-group
+-#cgo LDFLAGS: ${SRCDIR}/../../../zabbix_agent/logfiles/libzbxlogfiles.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxnum/libzbxnum.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxstr/libzbxstr.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxfile/libzbxfile.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxparam/libzbxparam.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxexpr/libzbxexpr.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxip/libzbxip.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxcomms/libzbxcomms.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxcommon/libzbxcommon.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxcrypto/libzbxcrypto.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxthreads/libzbxthreads.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxmutexs/libzbxmutexs.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxnix/libzbxnix.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxhttp/libzbxhttp.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxcompress/libzbxcompress.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxregexp/libzbxregexp.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxsysinfo/libzbxagentsysinfo.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxsysinfo/common/libcommonsysinfo.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxsysinfo/simple/libsimplesysinfo.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxsysinfo/linux/libspechostnamesysinfo.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxsysinfo/linux/libspecsysinfo.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxexec/libzbxexec.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxalgo/libzbxalgo.a
+-#cgo LDFLAGS: ${SRCDIR}/../../../libs/zbxjson/libzbxjson.a
+-#cgo pcre  LDFLAGS: -lz -lpcre -lresolv
+-#cgo pcre2 LDFLAGS: -lz -lpcre2-8 -lresolv
+-#cgo LDFLAGS: -Wl,--end-group
+ 
+ #include "zbxsysinfo.h"
+ #include "zbxcomms.h"
+--- zabbix-7.0.20/src/zabbix_java/Makefile.am.orig	2025-10-27 14:55:59.245664887 +0100
++++ zabbix-7.0.20/src/zabbix_java/Makefile.am	2025-10-30 23:24:04.882160839 +0100
+@@ -9,7 +9,7 @@
+ 	startup.sh
+ 
+ ZJG = bin/zabbix-java-gateway-$(VERSION).jar
+-LIB = lib/android-json-4.3_r3.1.jar:lib/logback-core-1.5.16.jar:lib/logback-classic-1.5.16.jar:lib/slf4j-api-2.0.16.jar
++LIB = $(srcdir)/lib/android-json-4.3_r3.1.jar:$(srcdir)/lib/logback-core-1.5.16.jar:$(srcdir)/lib/logback-classic-1.5.16.jar:$(srcdir)/lib/slf4j-api-2.0.16.jar
+ 
+ JUNIT = tests/junit-4.8.2.jar
+ 
+@@ -17,8 +17,8 @@
+ 
+ all: $(ZJG)
+ 
+-$(ZJG): class src/com/zabbix/gateway/*.java
+-	$(JAVAC) -d class/src -classpath $(LIB) src/com/zabbix/gateway/*.java
++$(ZJG): class $(srcdir)/src/com/zabbix/gateway/*.java
++	$(JAVAC) -d class/src -classpath $(LIB) $(srcdir)/src/com/zabbix/gateway/*.java
+ 	$(JAR) cf $(ZJG) -C class/src .
+ 
+ test: class
+@@ -29,18 +29,19 @@
+ 	java -classpath class/tests:$(LIB):$(ZJG):$(JUNIT) com.zabbix.gateway.AllTestRunner
+ 
+ class:
++	$(MKDIR_P) bin
+ 	$(MKDIR_P) class/src
+ 	$(MKDIR_P) class/tests
+ 
+ install: all
+ 	$(MKDIR_P) "$(ZJG_DEST)/bin"
+ 	$(MKDIR_P) "$(ZJG_DEST)/lib"
+-	cp startup.sh shutdown.sh "$(ZJG_DEST)"
+-	if test ! -f "$(ZJG_DEST)/settings.sh"; then cp settings.sh "$(ZJG_DEST)"; fi
++	cp $(srcdir)/startup.sh $(srcdir)/shutdown.sh "$(ZJG_DEST)"
++	if test ! -f "$(ZJG_DEST)/settings.sh"; then cp $(srcdir)/settings.sh "$(ZJG_DEST)"; fi
+ 	cp $(ZJG) "$(ZJG_DEST)/bin"
+-	cp lib/*.jar "$(ZJG_DEST)/lib"
+-	if test ! -f "$(ZJG_DEST)/lib/logback.xml"; then cp lib/logback.xml "$(ZJG_DEST)/lib"; fi
+-	if test ! -f "$(ZJG_DEST)/lib/logback-console.xml"; then cp lib/logback-console.xml "$(ZJG_DEST)/lib"; fi
++	cp $(srcdir)/lib/*.jar "$(ZJG_DEST)/lib"
++	if test ! -f "$(ZJG_DEST)/lib/logback.xml"; then cp $(srcdir)/lib/logback.xml "$(ZJG_DEST)/lib"; fi
++	if test ! -f "$(ZJG_DEST)/lib/logback-console.xml"; then cp $(srcdir)/lib/logback-console.xml "$(ZJG_DEST)/lib"; fi
+ 
+ clean:
+ 	rm -f tests/com/zabbix/gateway/jmx_test_beans/*.class
