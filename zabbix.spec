@@ -378,13 +378,8 @@ This package provides the Zabbix Java Gateway.
 
 configure() {
 	%configure \
-	%{?with_java:ac_cv_prog_JAVAC=%{java_home}/bin/javac} \
-	%{?with_java:ac_cv_prog_JAR=%{java_home}/bin/jar} \
 	--enable-dependency-tracking \
-	--enable-agent \
-	%{__enable_disable agent2} \
 	--enable-ipv6 \
-	%{__enable_disable java} \
 	--with-ares \
 	--with-ldap \
 	--with-libcurl \
@@ -400,6 +395,11 @@ configure() {
 }
 
 configure \
+	%{?with_java:JAVAC=%{java_home}/bin/javac} \
+	%{?with_java:JAR=%{java_home}/bin/jar} \
+	--enable-agent \
+	%{__enable_disable agent2} \
+	%{__enable_disable java} \
 	--disable-server \
 	--disable-proxy
 
@@ -414,7 +414,10 @@ for database in %{databases} ; do
 	configure \
 		--with-$database \
 		$enable_server \
-		--enable-proxy
+		--enable-proxy \
+		--disable-agent \
+		--disable-agent2 \
+		--disable-java
 
 	%{__make}
 
