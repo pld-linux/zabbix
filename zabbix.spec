@@ -25,7 +25,7 @@ Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
 Version:	7.0.21
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
@@ -243,8 +243,10 @@ Summary:	Zabbix proxy
 Summary(pl.UTF-8):	Proxy do Zabbiksa
 Group:		Networking/Utilities
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	group(icmp)
 Requires:	systemd-units >= 38
 Requires:	zabbix-proxy(db) = %{version}-%{release}
+Suggests:	fping
 
 %description proxy
 This package provides the Zabbix proxy.
@@ -314,7 +316,9 @@ Summary(pl.UTF-8):	Serwer Zabbiksa
 Group:		Networking/Utilities
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	%{name}-server(db) = %{version}-%{release}
+Requires:	group(icmp)
 Requires:	systemd-units >= 38
+Suggests:	fping
 Obsoletes:	zabbix-suckerd
 Obsoletes:	zabbix-trapper-inetd
 Obsoletes:	zabbix-trapper-standalone
@@ -524,6 +528,12 @@ rm -rf $RPM_BUILD_ROOT
 %triggerpostun agent2 -- zabbix-agent2 < 6.0.15
 %systemd_trigger zabbix_agent2.service
 
+%triggerun proxy -- zabbix-proxy < 7.0.21-2
+%addusertogroup -q zabbix icmp
+
+%triggerun server -- zabbix-server < 7.0.21-2
+%addusertogroup -q zabbix icmp
+
 %pre common
 %groupadd -g 111 zabbix
 %useradd -d / -u 111 -g zabbix -c "Zabbix User" -s /bin/false zabbix
@@ -566,6 +576,9 @@ fi
 ln -sf zabbix_server-postgresql %{_sbindir}/zabbix_server || :
 
 %post server
+if [ "$1" = 1 ]; then
+	%addusertogroup -q zabbix icmp
+fi
 %systemd_post zabbix_server.service
 
 %preun server
@@ -575,6 +588,9 @@ ln -sf zabbix_server-postgresql %{_sbindir}/zabbix_server || :
 if [ "$1" = "0" ]; then
 	if [ -L %{_sbindir}/zabbix_server ] ; then
 		rm -f %{_sbindir}/zabbix_server || :
+	fi
+	if [ ! -e /usr/sbin/zabbix_proxy ]; then
+		/usr/sbin/usermod -r -G icmp zabbix
 	fi
 fi
 %systemd_reload
@@ -616,12 +632,20 @@ ln -sf zabbix_proxy-postgresql %{_sbindir}/zabbix_proxy || :
 ln -sf zabbix_proxy-sqlite3 %{_sbindir}/zabbix_proxy || :
 
 %post proxy
+if [ "$1" = 1 ]; then
+	%addusertogroup -q zabbix icmp
+fi
 %systemd_post zabbix_proxy.service
 
 %preun proxy
 %systemd_preun zabbix_proxy.service
 
 %postun proxy
+if [ "$1" = 0 ]; then
+	if [ ! -e /usr/sbin/zabbix_server ]; then
+		/usr/sbin/usermod -r -G icmp zabbix
+	fi
+fi
 %systemd_reload
 
 %post java
