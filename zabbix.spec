@@ -133,6 +133,8 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires(pre):	/usr/sbin/usermod
+Requires:	group(proc)
 Provides:	group(zabbix)
 Provides:	user(zabbix)
 
