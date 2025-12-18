@@ -24,15 +24,15 @@
 Summary:	Zabbix - network monitoring software
 Summary(pl.UTF-8):	Zabbix - oprogramowanie do monitorowania sieci
 Name:		zabbix
-Version:	7.0.21
-Release:	3
+Version:	7.0.22
+Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 # https://www.zabbix.com/download_sources
 Source0:	https://cdn.zabbix.com/zabbix/sources/stable/7.0/%{name}-%{version}.tar.gz
-# Source0-md5:	4a367338724ed926d8034121a333ada0
+# Source0-md5:	42f8eedcc9ee2d36e57dc4715126d276
 Source100:	go-vendor.tar.xz
-# Source100-md5:	d535bea3f03aaedb7e95c7a081b4ac63
+# Source100-md5:	e9fec3e43c887dc2207feba1ceab02ed
 Source1:	%{name}-apache.conf
 Source2:	%{name}_server.service
 Source3:	%{name}_agentd.service
