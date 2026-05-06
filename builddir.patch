@@ -28,7 +28,6 @@
 -	$(top_srcdir)/src/libs/zbxembed/libzbxembed.a \
 -	$(top_srcdir)/src/libs/zbxjson/libzbxjson.a \
 -	$(top_srcdir)/src/libs/zbxregexp/libzbxregexp.a \
--	$(top_srcdir)/src/libs/zbxalgo/libzbxalgo.a \
 -	$(top_srcdir)/src/libs/zbxthreads/libzbxthreads.a \
 -	$(top_srcdir)/src/libs/zbxmutexs/libzbxmutexs.a \
 -	$(top_srcdir)/src/libs/zbxprof/libzbxprof.a \
@@ -42,6 +41,7 @@
 -	$(top_srcdir)/src/libs/zbxhttp/libzbxhttp.a \
 -	$(top_srcdir)/src/libs/zbxvariant/libzbxvariant.a \
 -	$(top_srcdir)/src/libs/zbxxml/libzbxxml.a \
+-	$(top_srcdir)/src/libs/zbxalgo/libzbxalgo.a \
 -	$(top_srcdir)/src/libs/zbxstr/libzbxstr.a \
 -	$(top_srcdir)/src/libs/zbxnum/libzbxnum.a \
 -	$(top_srcdir)/src/libs/zbxtime/libzbxtime.a \
@@ -52,7 +52,6 @@
 +	$(top_builddir)/src/libs/zbxembed/libzbxembed.a \
 +	$(top_builddir)/src/libs/zbxjson/libzbxjson.a \
 +	$(top_builddir)/src/libs/zbxregexp/libzbxregexp.a \
-+	$(top_builddir)/src/libs/zbxalgo/libzbxalgo.a \
 +	$(top_builddir)/src/libs/zbxthreads/libzbxthreads.a \
 +	$(top_builddir)/src/libs/zbxmutexs/libzbxmutexs.a \
 +	$(top_builddir)/src/libs/zbxprof/libzbxprof.a \
@@ -66,6 +65,7 @@
 +	$(top_builddir)/src/libs/zbxhttp/libzbxhttp.a \
 +	$(top_builddir)/src/libs/zbxvariant/libzbxvariant.a \
 +	$(top_builddir)/src/libs/zbxxml/libzbxxml.a \
++	$(top_builddir)/src/libs/zbxalgo/libzbxalgo.a \
 +	$(top_builddir)/src/libs/zbxstr/libzbxstr.a \
 +	$(top_builddir)/src/libs/zbxnum/libzbxnum.a \
 +	$(top_builddir)/src/libs/zbxtime/libzbxtime.a \
